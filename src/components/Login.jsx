@@ -1,4 +1,28 @@
 import { useState } from 'react';
+import './Login.css';
+
+
+function TextField({fieldName, variable, handleEvent, type}){
+    return(
+      <>
+        <label htmlFor={`${fieldName}-input`} className="text-field-label">
+          Enter {fieldName}:
+        </label>
+        <input
+          id={`${fieldName}-input`}
+          type={type}
+          value={variable} 
+          onChange={handleEvent} 
+          placeholder={`enter ${fieldName}`}
+          className='text-fields'
+        />
+
+        {/*for testing purposes*/}
+        <p><strong>Current {fieldName}:</strong> {variable}</p>
+      </>
+    );
+  }
+
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -12,43 +36,31 @@ export default function Login() {
     setPassword(event.target.value);
   };
 
+
   return (
     <>
     <form style={{ padding: '20px' }}>
-        <label htmlFor="name-input" style={{ display: 'block', marginBottom: '8px' }}>
-        Enter Username:
-      </label>
-      <input
-        id="name-input"
-        type="text"
-        value={username} 
-        onChange={handleUsernameChange} 
-        placeholder="enter username"
-        style={{ padding: '8px', fontSize: '16px', borderRadius: '4px', border: '1px solid #ccc' }}
+      <TextField
+        fieldName="username"
+        variable={username}
+        handleEvent={handleUsernameChange}
+        type = "text"
       />
-      <p><strong>Current Username:</strong> {username}</p>
 
-        <div style = {{padding: '10px'}}></div>
+      <div style = {{padding: '10px'}}></div>
 
-        <label htmlFor="name-input" style={{ display: 'block', marginBottom: '8px' }}>
-        Password:
-        </label>
-      <input
-        id="password-input"
-        type="password"
-        value={password} 
-        onChange={handlePasswordChange} 
-        placeholder="enter password"
-        style={{ padding: '8px', fontSize: '16px', borderRadius: '4px', border: '1px solid #ccc' }}
+      <TextField
+        fieldName="password"
+        variable={password}
+        handleEvent={handlePasswordChange}
+        type = "password"
       />
-      
-      <p><strong>Current Password:</strong> {password}</p>
 
 
     </form>
 
 
-    <button>Sign in</button>
+    <button className="login-button">Log in</button>
     </>
   );
 }
