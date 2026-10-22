@@ -3,8 +3,16 @@ import Login from "./components/Login"
 import Dashboard from "./components/Dashboard";
 
 export default function App(){
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [currentPage, setCurrentPage] = useState("login");
     return(
-        <Login></Login>
+        <>
+            {(currentPage === "login") &&
+            <Login navigatePage={()=>setCurrentPage("dashboard")}></Login>
+            }
+
+            {(currentPage === "dashboard") &&
+            <Dashboard navigatePage={()=>setCurrentPage("login")}></Dashboard>
+            }
+        </>
     );
 }

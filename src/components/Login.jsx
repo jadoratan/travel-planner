@@ -24,7 +24,7 @@ function TextField({fieldName, variable, handleEvent, type}){
   }
 
 
-export default function Login() {
+export default function Login({navigatePage}) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -39,6 +39,7 @@ export default function Login() {
 
   return (
     <>
+    <h1>LOG IN PAGE</h1>
     <form style={{ padding: '20px' }}>
       <TextField
         fieldName="username"
@@ -60,7 +61,12 @@ export default function Login() {
     </form>
 
 
-    <button className="login-button">Log in</button>
+    <button 
+      className="login-button"
+      onClick={navigatePage}
+    >
+      Log in
+    </button>
     </>
   );
 }

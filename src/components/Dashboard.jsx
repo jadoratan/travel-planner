@@ -1,7 +1,10 @@
 import { useState } from 'react';
 
-export default function Dashboard() {
+export default function Dashboard({navigatePage}) {
   return (
-    <h1>DASHBOARD PAGE</h1>
+    <div>
+      <h1>DASHBOARD PAGE</h1>
+      <button onClick={navigatePage}>log out</button>
+    </div>
   );
 }
