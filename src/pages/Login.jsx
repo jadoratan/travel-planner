@@ -1,27 +1,7 @@
 import { useState } from 'react';
 import './Login.css';
 
-
-function TextField({fieldName, variable, handleEvent, type}){
-    return(
-      <>
-        <label htmlFor={`${fieldName}-input`} className="text-field-label">
-          Enter {fieldName}:
-        </label>
-        <input
-          id={`${fieldName}-input`}
-          type={type}
-          value={variable} 
-          onChange={handleEvent} 
-          placeholder={`enter ${fieldName}`}
-          className='text-fields'
-        />
-
-        {/*for testing purposes*/}
-        <p><strong>Current {fieldName}:</strong> {variable}</p>
-      </>
-    );
-  }
+import TextField from '../components/TextField';
 
 
 export default function Login({navigatePage}) {

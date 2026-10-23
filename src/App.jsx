@@ -1,6 +1,6 @@
 import React, {useState} from "react";
-import Login from "./components/Login"
-import Dashboard from "./components/Dashboard";
+import Login from "./pages/Login"
+import Dashboard from "./pages/Dashboard";
 
 export default function App(){
     const [currentPage, setCurrentPage] = useState("login");
