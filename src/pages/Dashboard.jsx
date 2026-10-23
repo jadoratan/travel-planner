@@ -4,7 +4,7 @@ export default function Dashboard({navigatePage}) {
   return (
     <div>
       <h1>DASHBOARD PAGE</h1>
-      <button onClick={navigatePage}>log out</button>
+      <button onClick={() => navigatePage("login")}>log out</button>
     </div>
   );
 }

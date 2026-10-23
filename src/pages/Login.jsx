@@ -4,7 +4,7 @@ import './Login.css';
 import TextField from '../components/TextField';
 
 
-export default function Login({navigatePage}) {
+export default function Login({ navigatePage }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -43,10 +43,20 @@ export default function Login({navigatePage}) {
 
     <button 
       className="login-button"
-      onClick={navigatePage}
+      onClick={() => navigatePage("dashboard")}
     >
       Log in
     </button>
+
+
+    <h3>New to the app? Sign up here!</h3>
+    <button
+      className="login-button"
+      onClick={() => navigatePage("signup")}
+    >
+      Sign up
+    </button>
+
     </>
   );
 }
