@@ -29,10 +29,36 @@ export default function Signup({navigatePage}) {
         setPassword(event.target.value);
     };
 
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        try {
+            const res = await fetch('http://localhost:3001/signup', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    first_name: firstName, 
+                    last_name:lastName, 
+                    username:username,
+                    password:password,
+                    dob:dob,
+                })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                navigatePage("login")
+            }
+        } catch (err) {
+            setMessage('error');
+        }
+    };
+
     return (
     <>
         <h1>SIGN UP PAGE</h1>
-        <form style={{ padding: '20px' }}>
+        <form style={{ padding: '20px' }} onSubmit={handleSubmit}>
         <TextField
             fieldName="firstName"
             variable={firstName}
@@ -79,9 +105,8 @@ export default function Signup({navigatePage}) {
         <div style={{ padding: '10px' }}></div>
 
         <button 
-            type="button"
+            type="submit"
             className="signup-button"
-            onClick={() => {navigatePage("login")}}
         >
             Sign up
         </button>
