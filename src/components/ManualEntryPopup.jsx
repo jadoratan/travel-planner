@@ -20,14 +20,24 @@ export default function ManualEntryPopup({isOpen, onClose, title, inputs}){
     }, [isOpen]); //useEffect() runs when isOpen changes
 
 
+    const handleSubmit = (e) => {
+        e.preventDefault(); //prevents the whole app from reloading on submit
+
+    };
+
     return(
         <dialog
             ref = {popupRef}
             onClose = {onClose}
         >   
             <h2>{title}</h2>
-            {inputs.map((input, i) => (<div><input key = {i} placeholder = {input}/></div>))}
-            <button onClick={onClose}>done!</button>
+            <form onSubmit={handleSubmit}>
+                {inputs.map((input, i) => (<div><input key = {i} placeholder = {input}/></div>))}
+                
+                <button type="submit" onClick={onClose}>Done!</button>
+                <div></div>
+                <button type="button" onClick={onClose}>cancel</button>
+            </form>
         </dialog>
     );
 }
