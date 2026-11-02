@@ -4,7 +4,7 @@ import ManualEntryPopup from '../components/ManualEntryPopup';
 export default function Dashboard({navigatePage}) {
 
   const [flightPopupOpen, setFlightPopupOpen] = useState(false);
-  const flightInputs = ["Departure", "Destination", "Departure Date", "Destination Date", "Budget (USD)", "Flight ID"];
+  const flightInputs = ["Departure", "Destination", "Departure Date", "Arrival Date", "Budget (USD)", "Flight ID"];
 
   const [accommodationsPopupOpen, setAccommodationsPopupOpen] = useState(false);
   const accommodationsInputs = ["Place name", "Street Address", "Address Line 2", "City", "State/Province", "Zip Code", "Country",
