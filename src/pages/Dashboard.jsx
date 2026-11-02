@@ -6,7 +6,7 @@ export default function Dashboard({navigatePage}) {
   const [flightPopupOpen, setFlightPopupOpen] = useState(false);
   const flightInputs = [
     { label: "Mode of transport", options: ["Flight", "Train", "Bus", "Car", "Ferry", "Other"] },
-    "Departure", "Destination", "Departure Date", "Destination Date", "Budget (USD)", "Flight ID"
+    "Departure", "Destination", "Departure Date", "Arrival Date", "Budget (USD)", "Flight ID / Reference Number"
   ];
 
   const [accommodationsPopupOpen, setAccommodationsPopupOpen] = useState(false);
