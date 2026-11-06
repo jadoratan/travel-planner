@@ -32,11 +32,22 @@ app.post('/signup', async function(req, res) {
 
 });
 
-app.post('/login', function(req, res) {
-    const {data} = req.body;
-    console.log("Username: ", data.username);
-    console.log("Password: ", data.password);
-    res.json({ok : true});
+app.post('/login', async function(req, res) {
+    const { username, password } = req.body;
+    //look for a user with matching username and password
+    try {
+        const result = await pool.query(
+            'SELECT id FROM users WHERE username = $1 AND password = $2',
+            [username, password]
+        );
+        if (result.rows.length === 0) {
+            return res.status(401).json({ error: 'Invalid username or password' });
+        }
+        res.json({ id: result.rows[0].id });
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ error: 'Something went wrong' });
+    }
 });
 
 app.listen(3001, () => console.log('Server running on port 3001'))

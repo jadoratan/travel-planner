@@ -7,6 +7,7 @@ import TextField from '../components/TextField';
 export default function Login({ navigatePage }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -16,11 +17,35 @@ export default function Login({ navigatePage }) {
     setPassword(event.target.value);
   };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const res = await fetch('http://localhost:3001/login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        })
+      });
+
+      if (res.ok) {
+        navigatePage("dashboard")
+      } else {
+        setMessage('Invalid username or password');
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage('error');
+    }
+  };
+
 
   return (
     <>
     <h1>LOG IN PAGE</h1>
-    <form style={{ padding: '20px' }}>
+    <form style={{ padding: '20px' }} onSubmit={handleSubmit}>
       <TextField
         fieldName="username"
         variable={username}
@@ -37,16 +62,17 @@ export default function Login({ navigatePage }) {
         type = "password"
       />
 
+      <div style = {{padding: '10px'}}></div>
 
+      <button
+        type="submit"
+        className="login-button"
+      >
+        Log in
+      </button>
+
+      {message && <p>{message}</p>}
     </form>
-
-
-    <button 
-      className="login-button"
-      onClick={() => navigatePage("dashboard")}
-    >
-      Log in
-    </button>
 
 
     <h3>New to the app? Sign up here!</h3>
