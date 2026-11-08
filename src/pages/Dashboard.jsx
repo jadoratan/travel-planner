@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import ManualEntryPopup from '../components/ManualEntryPopup';
+import TripSidebar from '../components/TripSidebar';  
 
 export default function Dashboard({navigatePage}) {
 
@@ -16,11 +17,31 @@ export default function Dashboard({navigatePage}) {
   const [activityPopupOpen, setActivityPopupOpen] = useState(false);
   const activityInputs = ["Activity name", "Location", "Date", "Start time", "End time", "Cost"];
 
+  const [newTripPopupOpen, setNewTripPopupOpen] = useState(false);
+  const tripInputs = ["Trip Name", "Destination", "Start Date", "End Date", "Budget"];
+
+
+  const [tripList, setTripList] = useState(["japan", "hawaii", "italy"]);
+
+
   return (
     <div>
       <h1>DASHBOARD PAGE</h1>
 
+      <button name="new trip" onClick={() => setNewTripPopupOpen(true)}>🛄 new trip 🛄</button>
+      <ManualEntryPopup
+        isOpen={newTripPopupOpen}
+        onClose={() => setNewTripPopupOpen(false)}
+        title="New Trip Information"
+        inputs={tripInputs}
+      />
+
+      <TripSidebar trips={tripList}></TripSidebar>
+
+      <div style={{height:"3rem"}}></div>
+
       <h2>Add Your Plans!</h2>
+
       <button name="flight" onClick={() => setFlightPopupOpen(true)}>flight ✈️</button>
       <ManualEntryPopup
         isOpen={flightPopupOpen}
