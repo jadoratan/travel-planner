@@ -1,7 +1,10 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { Pool } from 'pg';
+import { GoogleGenAI } from '@google/genai';
 
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const app = express();
 
 const pool = new Pool({
@@ -48,6 +51,21 @@ app.post('/login', async function(req, res) {
         console.error(err)
         res.status(500).json({ error: 'Something went wrong' });
     }
+});
+
+app.post('/chat', async (req, res) => {
+  const { message, trip } = req.body;
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.8-flash',
+      contents: `You are a travel assistant. The user's trip: ${JSON.stringify(trip)}.
+Suggest specific activity ideas. User: ${message}`,
+    });
+    res.json({ reply: response.text });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Chat failed' });
+  }
 });
 
 app.listen(3001, () => console.log('Server running on port 3001'))
