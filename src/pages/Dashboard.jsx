@@ -27,6 +27,8 @@ export default function Dashboard({navigatePage}) {
 
 
   /* TRIP FILTER FUNCTIONALITY*/
+
+  //placeholder
   const tripList = ([
     { name: "Japan", id: 1},
     { name: "Italy", id: 2},
@@ -93,6 +95,8 @@ export default function Dashboard({navigatePage}) {
           title="Activity Information"
           inputs={activityInputs}
         />
+
+        <div style={{height:"2rem"}}></div>
 
         <h2>Current Trip: {displayTrip.name}</h2>
 
