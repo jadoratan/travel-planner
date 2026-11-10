@@ -71,6 +71,8 @@ export default function Login({ navigatePage }) {
         type = "text"
       />
 
+      {username && !validFields.username && <p>Username must be at least 4 letters, numbers, or underscores</p>}
+
       <div style = {{padding: '10px'}}></div>
 
       <TextField
@@ -88,6 +90,8 @@ export default function Login({ navigatePage }) {
       >
         Log in
       </button>
+
+      {password && !validFields.password && <p>Password must be at least 8 characters</p>}
 
       {message && <p>{message}</p>}
     </form>
