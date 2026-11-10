@@ -9,6 +9,25 @@ export default function Signup({navigatePage}) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
+    const [validFields, setValidFields] = useState({
+        firstName: false,
+        lastName: false,
+        username: false,
+        password: false,
+        dob: false,
+    });
+
+    
+    const regexRules = {
+        firstName: /^[a-zA-Z]+$/,
+        lastName: /^[a-zA-Z]+$/,
+        username: /^\w{4,}$/,
+        password: /^(\w){8,}$/,
+        dob: /^(?<month>0[1-9]|1[0-2])\/(?<date>0[1-9]|[1-2]\d|3[0-1])\/(<?year>19[\d{2}]|20[0-2][0-9])$/,
+    }
+
+    const isFormValid = Object.values(validFields).every(value => value === true);
+
     const handleFirstNameChange = (event) => {
         setFirstName(event.target.value);
         const isValid = firstName.trim === "" ? false : regexRules.firstName.test(event.target.value);
@@ -35,30 +54,36 @@ export default function Signup({navigatePage}) {
         setValidFields((prev) => ({...prev, password: regexRules.password.test(event.target.value)}));
     };
 
-   
-    const [validFields, setValidFields] = useState({
-        firstName: false,
-        lastName: false,
-        username: false,
-        password: false,
-        dob: false,
-    });
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-    
-    const regexRules = {
-        firstName: /^[a-zA-Z]+$/,
-        lastName: /^[a-zA-Z]+$/,
-        username: /^\w{4,}$/,
-        password: /^(\w){8,}$/,
-        dob: /^(?<month>0[1-9]|1[0-2])\/(?<date>0[1-9]|[1-2]\d|3[0-1])\/(<?year>19[\d{2}]|20[0-2][0-9])$/,
-    }
+        try {
+            const res = await fetch('http://localhost:3001/signup', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    first_name: firstName, 
+                    last_name:lastName, 
+                    username:username,
+                    password:password,
+                    dob:dob,
+                })
+            });
 
-    const isFormValid = Object.values(validFields).every(value => value === true);
+            const data = await res.json();
+
+            if (res.ok) {
+                navigatePage("login")
+            }
+        } catch (err) {
+            setMessage('error');
+        }
+    };
 
     return (
     <>
         <h1>SIGN UP PAGE</h1>
-        <form style={{ padding: '20px' }}>
+        <form style={{ padding: '20px' }} onSubmit={handleSubmit}>
         <TextField
             fieldName="firstName"
             //value = {firstName}
@@ -111,7 +136,7 @@ export default function Signup({navigatePage}) {
         <div style={{ padding: '10px' }}></div>
 
         <button 
-            type="button"
+            type="submit"
             className="signup-button"
             disabled={!isFormValid}
             onClick={() => {navigatePage("login")}}
