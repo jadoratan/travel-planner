@@ -11,22 +11,28 @@ export default function Signup({navigatePage}) {
 
     const handleFirstNameChange = (event) => {
         setFirstName(event.target.value);
+        const isValid = firstName.trim === "" ? false : regexRules.firstName.test(event.target.value);
+        setValidFields((prev) => ({...prev, firstName: isValid}));
     };
 
     const handleLastNameChange = (event) => {
         setLastName(event.target.value);
+        setValidFields((prev) => ({...prev, lastName: regexRules.lastName.test(event.target.value)}));
     };
 
     const handleDOBChange = (event) => {
         setDOB(event.target.value);
+        setValidFields((prev) => ({...prev, dob: regexRules.dob.test(event.target.value)}));
     };
 
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
+        setValidFields((prev) => ({...prev, username: regexRules.username.test(event.target.value)}));
     };
 
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
+        setValidFields((prev) => ({...prev, password: regexRules.password.test(event.target.value)}));
     };
 
     const handleSubmit = async (event) => {
@@ -61,10 +67,12 @@ export default function Signup({navigatePage}) {
         <form style={{ padding: '20px' }} onSubmit={handleSubmit}>
         <TextField
             fieldName="firstName"
+            //value = {firstName}
             variable={firstName}
             handleEvent={handleFirstNameChange}
             type="text"
         />
+        {validFields?.firstName? <h2>VALID</h2> : <h2>INVALID</h2> }
 
         <div style={{ padding: '10px' }}></div>
 
@@ -74,6 +82,7 @@ export default function Signup({navigatePage}) {
             handleEvent={handleLastNameChange}
             type="text"
         />
+        {validFields?.lastName ? <h2>VALID</h2> : <h2>INVALID</h2> }
 
         <div style={{ padding: '10px' }}></div>
 
@@ -83,6 +92,7 @@ export default function Signup({navigatePage}) {
             handleEvent={handleDOBChange}
             type="text"
         />
+        {validFields?.dob ? <h2>VALID</h2> : <h2>INVALID</h2> }
 
         <div style={{ padding: '10px' }}></div>
 
@@ -92,6 +102,7 @@ export default function Signup({navigatePage}) {
             handleEvent={handleUsernameChange}
             type="text"
         />
+        {validFields?.username ? <h2>VALID</h2> : <h2>INVALID</h2> }
 
         <div style={{ padding: '10px' }}></div>
 
@@ -101,12 +112,15 @@ export default function Signup({navigatePage}) {
             handleEvent={handlePasswordChange}
             type="password"
         />
+        {validFields?.password ? <h2>VALID</h2> : <h2>INVALID</h2> }
 
         <div style={{ padding: '10px' }}></div>
 
         <button 
             type="submit"
             className="signup-button"
+            disabled={!isFormValid}
+            onClick={() => {navigatePage("login")}}
         >
             Sign up
         </button>

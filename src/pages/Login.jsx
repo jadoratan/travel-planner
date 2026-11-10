@@ -3,18 +3,30 @@ import './Login.css';
 
 import TextField from '../components/TextField';
 
-
 export default function Login({ navigatePage }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
+  const [validFields, setValidFields] = useState({
+    username: false,
+    password: false,
+  });
+
+  // same rules as signup
+  const regexRules = {
+    username: /^\w{4,}$/,
+    password: /^\w{8,}$/,
+  };
+
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
+    setValidFields((prev) => ({ ...prev, username: regexRules.username.test(event.target.value) }));
   };
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
+    setValidFields((prev) => ({ ...prev, password: regexRules.password.test(event.target.value) }));
   };
 
   const handleSubmit = async (event) => {
