@@ -8,6 +8,10 @@ export default function Login({ navigatePage }) {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
+
+  //potentially get rid of regex validation for login: 
+  //  it matters that the input matches a database entry and not so much a regex pattern 
+  //if login input is regex valid
   const [validFields, setValidFields] = useState({
     username: false,
     password: false,
@@ -18,6 +22,8 @@ export default function Login({ navigatePage }) {
     username: /^\w{4,}$/,
     password: /^\w{8,}$/,
   };
+
+  //end of regex vars//
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);

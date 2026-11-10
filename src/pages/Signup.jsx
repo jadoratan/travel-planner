@@ -9,6 +9,25 @@ export default function Signup({navigatePage}) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
+    const [validFields, setValidFields] = useState({
+        firstName: false,
+        lastName: false,
+        username: false,
+        password: false,
+        dob: false,
+    });
+
+    
+    const regexRules = {
+        firstName: /^[a-zA-Z]+$/,
+        lastName: /^[a-zA-Z]+$/,
+        username: /^\w{4,}$/,
+        password: /^(\w){8,}$/,
+        dob: /^(?<month>0[1-9]|1[0-2])\/(?<date>0[1-9]|[1-2]\d|3[0-1])\/(<?year>19[\d{2}]|20[0-2][0-9])$/,
+    }
+
+    const isFormValid = Object.values(validFields).every(value => value === true);
+
     const handleFirstNameChange = (event) => {
         setFirstName(event.target.value);
         const isValid = firstName.trim === "" ? false : regexRules.firstName.test(event.target.value);
