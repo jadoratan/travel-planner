@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import ManualEntryPopup from '../components/ManualEntryPopup';
 import TripSidebar from '../components/TripSidebar';  
+import InfoDisplayCard from '../components/InfoDisplayCard'
 
 import './Dashboard.css';
 
@@ -99,6 +100,12 @@ export default function Dashboard({navigatePage}) {
         <div style={{height:"2rem"}}></div>
 
         <h2>Current Trip: {displayTrip.name}</h2>
+        <InfoDisplayCard 
+          date = "12/10/2026"
+          time = "2:50pm"
+          title = "Flight to HND"
+          description="flight id: fd832ld"
+        />
 
         <div style={{height:"2rem"}}></div>
         <h2>Log Out:</h2>
