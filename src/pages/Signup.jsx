@@ -23,7 +23,7 @@ export default function Signup({navigatePage}) {
         lastName: /^[a-zA-Z]+$/,
         username: /^\w{4,}$/,
         password: /^(\w){8,}$/,
-        dob: /^(?<month>0[1-9]|1[0-2])\/(?<date>0[1-9]|[1-2]\d|3[0-1])\/(<?year>19[\d{2}]|20[0-2][0-9])$/,
+        dob: /^(?<month>0[1-9]|1[0-2])\/(?<date>0[1-9]|[1-2]\d|3[0-1])\/(?<year>19\d{2}|20[0-2][0-9])$/,
     }
 
     const isFormValid = Object.values(validFields).every(value => value === true);
@@ -121,7 +121,7 @@ export default function Signup({navigatePage}) {
             handleEvent={handleUsernameChange}
             type="text"
         />
-        {validFields?.username ? <h2>VALID</h2> : <h2>INVALID</h2> }
+        {validFields?.username ? <h2>VALID</h2> : <h2>INVALID: Must be at least 4 characters</h2> }
 
         <div style={{ padding: '10px' }}></div>
 
@@ -131,7 +131,7 @@ export default function Signup({navigatePage}) {
             handleEvent={handlePasswordChange}
             type="password"
         />
-        {validFields?.password ? <h2>VALID</h2> : <h2>INVALID</h2> }
+        {validFields?.password ? <h2>VALID</h2> : <h2>INVALID: Must be at least 8 characters</h2> }
 
         <div style={{ padding: '10px' }}></div>
 
@@ -139,7 +139,6 @@ export default function Signup({navigatePage}) {
             type="submit"
             className="signup-button"
             disabled={!isFormValid}
-            onClick={() => {navigatePage("login")}}
         >
             Sign up
         </button>
