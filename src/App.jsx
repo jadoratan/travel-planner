@@ -5,14 +5,15 @@ import Signup from "./pages/Signup";
 
 export default function App(){
     const [currentPage, setCurrentPage] = useState("login");
+    const [userId, setUserId] = useState(null);
     return(
         <>
             {(currentPage === "login") &&
-                <Login navigatePage={setCurrentPage} />
+                <Login navigatePage={setCurrentPage} onLogin={setUserId} />
             }
 
             {(currentPage === "dashboard") &&
-                <Dashboard navigatePage={setCurrentPage} />
+                <Dashboard navigatePage={setCurrentPage} userId={userId} />
             }
 
             {(currentPage === "signup") &&
