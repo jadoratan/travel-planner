@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import './InfoDisplayCard.css'
 
-export default function InfoDisplayCard({date, time, title, description}) {
+function InfoDisplayCard({date, time, title, description}) {
     return(
         <div className='trip-item'>
             <div className = "trip-time">
@@ -18,14 +18,16 @@ export default function InfoDisplayCard({date, time, title, description}) {
         </div>
     );
 }
-/*
-export default function TransportInfoDisplayCard({departure, destination, departDate, arrivalDate, id}){
+
+function TransportInfoDisplayCard({mode, time, departure, destination, date, id}){
   return(
     <InfoDisplayCard
-      title = {`${departure} -> ${destination}`}
+      date = {date}
+      time = {time}
+      title = {`${mode}: ${departure} -> ${destination}`}
       description = {`ID: ${id}`}
     />
-
   );
 }
-  */
+
+export {InfoDisplayCard, TransportInfoDisplayCard}

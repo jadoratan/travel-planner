@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ManualEntryPopup from '../components/ManualEntryPopup';
 import TripSidebar from '../components/TripSidebar';  
-import InfoDisplayCard from '../components/InfoDisplayCard'
+import {InfoDisplayCard, TransportInfoDisplayCard} from '../components/InfoDisplayCard'
 
 import './Dashboard.css';
 
@@ -100,11 +100,14 @@ export default function Dashboard({navigatePage}) {
         <div style={{height:"2rem"}}></div>
 
         <h2>Current Trip: {displayTrip.name}</h2>
-        <InfoDisplayCard 
-          date = "12/10/2026"
+
+        <TransportInfoDisplayCard
+          date = "Dec 10th, 2026"
+          departure = "LAX"
+          destination ="HND"
+          mode= "Flight"
+          id = "fd832ld"
           time = "2:50pm"
-          title = "Flight to HND"
-          description="flight id: fd832ld"
         />
 
         <div style={{height:"2rem"}}></div>
