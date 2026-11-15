@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ManualEntryPopup from '../components/ManualEntryPopup';
 import TripSidebar from '../components/TripSidebar';  
-import {InfoDisplayCard, TransportInfoDisplayCard} from '../components/InfoDisplayCard'
+import {ActivityInfoDisplayCard, AccomodationInfoDisplayCard, TransportInfoDisplayCard} from '../components/InfoDisplayCard'
 
 import './Dashboard.css';
 
@@ -69,7 +69,7 @@ export default function Dashboard({navigatePage}) {
         <h1>DASHBOARD PAGE</h1>
         <h2>Add Your Plans!</h2>
 
-        <button name="flight" onClick={() => setFlightPopupOpen(true)}>flight ✈️</button>
+        <button name="flight" onClick={() => setFlightPopupOpen(true)}>transportation ✈️</button>
         <ManualEntryPopup
           isOpen={flightPopupOpen}
           onClose={() => setFlightPopupOpen(false)}
@@ -107,7 +107,30 @@ export default function Dashboard({navigatePage}) {
           destination ="HND"
           mode= "Flight"
           id = "fd832ld"
-          time = "2:50pm"
+          time = "2:50am"
+        />
+
+        <AccomodationInfoDisplayCard
+          name = "Fantasy Springs"
+          location = "1-13 Maihama, Urayasu, Chiba 279-8511, Japan"
+          date = "Dec 10th, 2026"
+          time = "7pm"
+          isCheckIn = {true}
+        />
+
+        <ActivityInfoDisplayCard
+            name = "Disney Sea"
+            location = "1-13 Maihama, Urayasu, Chiba 279-8511, Japan"
+            date = "Dec 11th, 2026"
+            startTime = "7am"
+        />
+
+        <AccomodationInfoDisplayCard
+          name = "Fantasy Springs"
+          location = "1-13 Maihama, Urayasu, Chiba 279-8511, Japan"
+          date = "Dec 15th, 2026"
+          time = "11am"
+          isCheckIn = {false}
         />
 
         <div style={{height:"2rem"}}></div>

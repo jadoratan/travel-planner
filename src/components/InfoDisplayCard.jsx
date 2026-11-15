@@ -19,7 +19,7 @@ function InfoDisplayCard({date, time, title, description}) {
     );
 }
 
-function TransportInfoDisplayCard({mode, time, departure, destination, date, id}){
+function TransportInfoDisplayCard({mode, departure, destination, date, time, id}){
   return(
     <InfoDisplayCard
       date = {date}
@@ -30,4 +30,26 @@ function TransportInfoDisplayCard({mode, time, departure, destination, date, id}
   );
 }
 
-export {InfoDisplayCard, TransportInfoDisplayCard}
+function AccomodationInfoDisplayCard({name, location, date, time, isCheckIn}){
+  return(
+    <InfoDisplayCard
+      date = {date}
+      time = {time}
+      title = {isCheckIn ? `Check In: ${name}` : `Check Out: ${name}`}
+      description = {`at ${location}`}
+    />
+  );
+}
+
+function ActivityInfoDisplayCard({name, location, date, startTime}){
+  return(
+    <InfoDisplayCard
+      date = {date}
+      time = {startTime}
+      title = {name}
+      description = {`at ${location}`}
+    />
+  );
+}
+
+export {InfoDisplayCard, TransportInfoDisplayCard, ActivityInfoDisplayCard, AccomodationInfoDisplayCard}
