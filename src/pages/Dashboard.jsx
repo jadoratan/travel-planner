@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import ManualEntryPopup from '../components/ManualEntryPopup';
 import TripSidebar from '../components/TripSidebar';  
+import {ActivityInfoDisplayCard, AccomodationInfoDisplayCard, TransportInfoDisplayCard} from '../components/InfoDisplayCard'
 
 import './Dashboard.css';
 
@@ -113,7 +114,7 @@ export default function Dashboard({navigatePage, userId}) {
         <h1>DASHBOARD PAGE</h1>
         <h2>Add Your Plans!</h2>
 
-        <button name="transportation" disabled={!currentTripID} onClick={() => setTransportationPopupOpen(true)}>flight ✈️</button>
+        <button name="transportation" disabled={!currentTripID} onClick={() => setTransportationPopupOpen(true)}>transportation </button>
         <ManualEntryPopup
           isOpen={transportationPopupOpen}
           onClose={() => setTransportationPopupOpen(false)}
@@ -147,6 +148,38 @@ export default function Dashboard({navigatePage, userId}) {
         <div style={{height:"2rem"}}></div>
 
         <h2>Current Trip: {displayTrip?.name ?? "none selected"}</h2>
+
+        <TransportInfoDisplayCard
+          date = "Dec 10th, 2026"
+          departure = "LAX"
+          destination ="HND"
+          mode= "Flight"
+          id = "fd832ld"
+          time = "2:50am"
+        />
+
+        <AccomodationInfoDisplayCard
+          name = "Fantasy Springs"
+          location = "1-13 Maihama, Urayasu, Chiba 279-8511, Japan"
+          date = "Dec 10th, 2026"
+          time = "7pm"
+          isCheckIn = {true}
+        />
+
+        <ActivityInfoDisplayCard
+            name = "Disney Sea"
+            location = "1-13 Maihama, Urayasu, Chiba 279-8511, Japan"
+            date = "Dec 11th, 2026"
+            startTime = "7am"
+        />
+
+        <AccomodationInfoDisplayCard
+          name = "Fantasy Springs"
+          location = "1-13 Maihama, Urayasu, Chiba 279-8511, Japan"
+          date = "Dec 15th, 2026"
+          time = "11am"
+          isCheckIn = {false}
+        />
 
         <div style={{height:"2rem"}}></div>
         <h2>Log Out:</h2>
