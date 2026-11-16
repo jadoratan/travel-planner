@@ -61,50 +61,92 @@ export default function Login({ navigatePage }) {
 
 
   return (
-    <>
-    <h1>LOG IN PAGE</h1>
-    <form style={{ padding: '20px' }} onSubmit={handleSubmit}>
-      <TextField
-        fieldName="username"
-        variable={username}
-        handleEvent={handleUsernameChange}
-        type = "text"
-      />
+    <div className = "login-page">
 
-      {username && !validFields.username && <p>Username must be at least 4 letters, numbers, or underscores</p>}
+    {/*left panel sign up form*/}
+    <section className = "login-panel">
+      <h1>Welcome!</h1>
+      <p>Log in here</p>
+      <form style={{ padding: '20px' }} onSubmit={handleSubmit} className = "login-form">
+        <TextField
+          fieldName="username"
+          variable={username}
+          handleEvent={handleUsernameChange}
+          type = "text"
+        />
 
-      <div style = {{padding: '10px'}}></div>
+        {username && !validFields.username && <p>Username must be at least 4 letters, numbers, or underscores</p>}
 
-      <TextField
-        fieldName="password"
-        variable={password}
-        handleEvent={handlePasswordChange}
-        type = "password"
-      />
+        <div style = {{padding: '10px'}}></div>
 
-      <div style = {{padding: '10px'}}></div>
+        <TextField
+          fieldName="password"
+          variable={password}
+          handleEvent={handlePasswordChange}
+          type = "password"
+        />
 
+        <div style = {{padding: '10px'}}></div>
+
+        <button
+          type="submit"
+          className="login-button"
+        >
+          Log in
+        </button>
+
+        {password && !validFields.password && <p>Password must be at least 8 characters</p>}
+
+        {message && <p>{message}</p>}
+      </form>
+
+
+      <h3>New to the app? Sign up here!</h3>
       <button
-        type="submit"
         className="login-button"
+        onClick={() => navigatePage("signup")}
       >
-        Log in
+        Sign up
       </button>
 
-      {password && !validFields.password && <p>Password must be at least 8 characters</p>}
-
-      {message && <p>{message}</p>}
-    </form>
+    </section>
 
 
-    <h3>New to the app? Sign up here!</h3>
-    <button
-      className="login-button"
-      onClick={() => navigatePage("signup")}
-    >
-      Sign up
-    </button>
+    {/*right panel welcome visual*/}
+     <aside className="login-scene" aria-hidden="true">
+      <div className="login-sun" />
 
-    </>
+      <svg className="login-hills" viewBox="0 0 800 300" preserveAspectRatio="none">
+        <path d="M0 120 C 200 40, 380 60, 560 130 S 760 120, 800 100 V300 H0Z" fill="#6d9db0" />
+        <path d="M0 220 C 180 150, 360 170, 520 220 S 720 240, 800 200 V300 H0Z" fill="#2f5552" />
+      </svg>
+
+      <div className="login-ticket">
+        <div className="login-ticket-main">
+          <div className="login-ticket-route">
+            <span>LAX</span>
+            <span>HND</span>
+          </div>
+          <div className="login-ticket-cities">
+            <span>Los Angeles</span>
+            <span>Tokyo Haneda</span>
+          </div>
+          <div className="login-ticket-dates">
+            <div><small>Depart</small>14 Mar</div>
+            <div><small>Return</small>22 Mar</div>
+            <div><small>Budget</small>$2,500</div>
+          </div>
+        </div>
+
+        <ul className="login-ticket-checklist">
+          <li>Flights</li>
+          <li>Hotel</li>
+          <li className="todo">Rail pass</li>
+        </ul>
+      </div>
+    </aside>
+
+    </div>
+
   );
 }
