@@ -77,16 +77,12 @@ export default function Login({ navigatePage }) {
 
         {username && !validFields.username && <p>Username must be at least 4 letters, numbers, or underscores</p>}
 
-        <div style = {{padding: '10px'}}></div>
-
         <TextField
           fieldName="password"
           variable={password}
           handleEvent={handlePasswordChange}
           type = "password"
         />
-
-        <div style = {{padding: '10px'}}></div>
 
         <button
           type="submit"
@@ -98,6 +94,8 @@ export default function Login({ navigatePage }) {
         {password && !validFields.password && <p>Password must be at least 8 characters</p>}
 
         {message && <p>{message}</p>}
+
+  
       </form>
 
 

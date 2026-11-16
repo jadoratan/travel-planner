@@ -97,7 +97,7 @@ body {
 }
 
 .login-button {
-  align-self: flex-start;
+  align-self: center;
   padding: 12px 40px;
   font: inherit;
   font-weight: 700;
@@ -120,6 +120,26 @@ body {
 
 .login-button--full {
   width: 100%;
+}
+
+.login-button:disabled,
+.login-button[aria-disabled="true"] {
+  background: var(--wf-sage);
+  color: rgba(255, 237, 229, 0.85);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* keep hover from "lighting up" a disabled button */
+.login-button:disabled:hover {
+  background: var(--wf-sage);
+}
+
+/* secondary (outlined) buttons */
+.login-button--secondary:disabled {
+  background: transparent;
+  color: var(--wf-sage);
+  border-color: var(--wf-sage);
 }
 
 .login-error {
