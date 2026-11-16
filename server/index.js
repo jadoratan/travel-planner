@@ -68,4 +68,60 @@ Suggest specific activity ideas. User: ${message}`,
   }
 });
 
+// creates a new trip
+app.post('/trips', async function(req, res) {
+    const { user_id, name, destination, start_date, end_date } = req.body;
+    try {
+        const result = await pool.query(
+            'INSERT INTO trips (user_id, name, destination, start_date, end_date) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [user_id, name, destination || null, start_date || null, end_date || null]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+});
+
+// gets all the logged-in user's trips, e.g. GET /trips?user_id=3
+app.get('/trips', async function(req, res) {
+    const { user_id } = req.query;
+    try {
+        const result = await pool.query(
+            'SELECT * FROM trips WHERE user_id = $1 ORDER BY start_date NULLS LAST, id',
+            [user_id]
+        );
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+});
+
+// creates a manual entry for a category
+const ENTRY_COLUMNS = {
+  transportation: ['type','depart_location','arrive_location','depart_date','depart_time','arrive_date','arrive_time','cost','confirmation'],
+  accommodations: ['name','street_address','address_line_2','city','state_province','zip_code','country','check_in','check_out','cost','confirmation'],
+  activities:     ['name','location','date','start_time','end_time','cost','notes'],
+};
+
+for (const [table, cols] of Object.entries(ENTRY_COLUMNS)) {
+  app.post(`/trips/:tripId/${table}`, async (req, res) => {
+    // empty form fields arrive as "", which DATE/TIME/NUMERIC columns reject
+    const values = cols.map(c => (req.body[c] === '' || req.body[c] === undefined) ? null : req.body[c]);
+    const placeholders = cols.map((_, i) => `$${i + 2}`).join(', ');
+    try {
+      const result = await pool.query(
+        `INSERT INTO ${table} (trip_id, ${cols.join(', ')}) VALUES ($1, ${placeholders}) RETURNING *`,
+        [req.params.tripId, ...values]
+      );
+      res.status(201).json(result.rows[0]);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Something went wrong' });
+    }
+  });
+}
+
+
 app.listen(3001, () => console.log('Server running on port 3001'))
