@@ -3,7 +3,7 @@ import './Login.css';
 
 import TextField from '../components/TextField';
 
-export default function Login({ navigatePage }) {
+export default function Login({ navigatePage, onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -49,6 +49,8 @@ export default function Login({ navigatePage }) {
       });
 
       if (res.ok) {
+        const data = await res.json();
+        onLogin(data.id);
         navigatePage("dashboard")
       } else {
         setMessage('Invalid username or password');
