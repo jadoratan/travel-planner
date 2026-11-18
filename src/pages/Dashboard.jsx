@@ -86,6 +86,33 @@ export default function Dashboard({navigatePage, userId}) {
   }
 
 
+
+  /* DISPLAY ENTRIES FUNCTIONALITY*/
+  const [transportation, setTransportation] = useState([]);
+  const [accommodations, setAccommodations] = useState([]);
+  const [activities, setActivities] = useState([]);
+
+  // load the current trip's entries whenever the selected trip changes
+  useEffect(() => {
+    if (!currentTripID) { return; }
+
+    fetch(`http://localhost:3001/trips/${currentTripID}/transportation`)
+      .then((res) => res.json())
+      .then((data) => setTransportation(data))
+      .catch((err) => console.error(err));
+
+    fetch(`http://localhost:3001/trips/${currentTripID}/accommodations`)
+      .then((res) => res.json())
+      .then((data) => setAccommodations(data))
+      .catch((err) => console.error(err));
+
+    fetch(`http://localhost:3001/trips/${currentTripID}/activities`)
+      .then((res) => res.json())
+      .then((data) => setActivities(data))
+      .catch((err) => console.error(err));
+  }, [currentTripID]);
+
+
   return (
     <div class="dashboard">
 
@@ -121,6 +148,7 @@ export default function Dashboard({navigatePage, userId}) {
           title="Transportation Information"
           inputs={transportationInputs}
           endpoint={`http://localhost:3001/trips/${currentTripID}/transportation`}
+          onSaved={(entry) => setTransportation(t => [...t, entry])}
         />
 
         <div style={{height:"rem"}}></div>
@@ -132,6 +160,7 @@ export default function Dashboard({navigatePage, userId}) {
           title="Accommodations Information"
           inputs={accommodationsInputs}
           endpoint={`http://localhost:3001/trips/${currentTripID}/accommodations`}
+          onSaved={(entry) => setAccommodations(a => [...a, entry])}
         />
 
         <div style={{height:"rem"}}></div>
@@ -143,43 +172,51 @@ export default function Dashboard({navigatePage, userId}) {
           title="Activity Information"
           inputs={activityInputs}
           endpoint={`http://localhost:3001/trips/${currentTripID}/activities`}
+          onSaved={(entry) => setActivities(a => [...a, entry])}
         />
 
         <div style={{height:"2rem"}}></div>
 
         <h2>Current Trip: {displayTrip?.name ?? "none selected"}</h2>
 
-        <TransportInfoDisplayCard
-          date = "Dec 10th, 2026"
-          departure = "LAX"
-          destination ="HND"
-          mode= "Flight"
-          id = "fd832ld"
-          time = "2:50am"
-        />
+        {transportation.map((t) => (
+          <TransportInfoDisplayCard
+            key = {t.id}
+            date = {t.depart_date?.slice(0, 10)}
+            time = {t.depart_time}
+            departure = {t.depart_location}
+            destination = {t.arrive_location}
+            mode = {t.type}
+            id = {t.confirmation}
+          />
+        ))}
 
-        <AccomodationInfoDisplayCard
-          name = "Fantasy Springs"
-          location = "1-13 Maihama, Urayasu, Chiba 279-8511, Japan"
-          date = "Dec 10th, 2026"
-          time = "7pm"
-          isCheckIn = {true}
-        />
+        {accommodations.map((a) => (
+          <div key = {a.id}>
+            <AccomodationInfoDisplayCard
+              name = {a.name}
+              location = {a.city}
+              date = {a.check_in?.slice(0, 10)}
+              isCheckIn = {true}
+            />
+            <AccomodationInfoDisplayCard
+              name = {a.name}
+              location = {a.city}
+              date = {a.check_out?.slice(0, 10)}
+              isCheckIn = {false}
+            />
+          </div>
+        ))}
 
-        <ActivityInfoDisplayCard
-            name = "Disney Sea"
-            location = "1-13 Maihama, Urayasu, Chiba 279-8511, Japan"
-            date = "Dec 11th, 2026"
-            startTime = "7am"
-        />
-
-        <AccomodationInfoDisplayCard
-          name = "Fantasy Springs"
-          location = "1-13 Maihama, Urayasu, Chiba 279-8511, Japan"
-          date = "Dec 15th, 2026"
-          time = "11am"
-          isCheckIn = {false}
-        />
+        {activities.map((a) => (
+          <ActivityInfoDisplayCard
+            key = {a.id}
+            name = {a.name}
+            location = {a.location}
+            date = {a.date?.slice(0, 10)}
+            startTime = {a.start_time}
+          />
+        ))}
 
         <div style={{height:"2rem"}}></div>
         <h2>Log Out:</h2>

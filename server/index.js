@@ -83,7 +83,7 @@ app.post('/trips', async function(req, res) {
     }
 });
 
-// gets all the logged-in user's trips, e.g. GET /trips?user_id=3
+// gets all the logged-in user's trips
 app.get('/trips', async function(req, res) {
     const { user_id } = req.query;
     try {
@@ -116,6 +116,39 @@ for (const [table, cols] of Object.entries(ENTRY_COLUMNS)) {
         [req.params.tripId, ...values]
       );
       res.status(201).json(result.rows[0]);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Something went wrong' });
+    }
+  });
+
+  // gets all entries in a category for a trip
+  app.get(`/trips/:tripId/${table}`, async (req, res) => {
+    try {
+      const result = await pool.query(
+        `SELECT * FROM ${table} WHERE trip_id = $1 ORDER BY id`,
+        [req.params.tripId]
+      );
+      res.json(result.rows);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Something went wrong' });
+    }
+  });
+
+  // updates an entry in a category
+  app.put(`/trips/:tripId/${table}/:id`, async (req, res) => {
+    const values = cols.map(c => (req.body[c] === '' || req.body[c] === undefined) ? null : req.body[c]);
+    const setColumns = cols.map((c, i) => `${c} = $${i + 3}`).join(', ');
+    try {
+      const result = await pool.query(
+        `UPDATE ${table} SET ${setColumns} WHERE id = $1 AND trip_id = $2 RETURNING *`,
+        [req.params.id, req.params.tripId, ...values]
+      );
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Entry not found' });
+      }
+      res.json(result.rows[0]);
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: 'Something went wrong' });
