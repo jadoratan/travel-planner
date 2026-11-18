@@ -113,6 +113,24 @@ export default function Dashboard({navigatePage, userId}) {
   }, [currentTripID]);
 
 
+
+  /* EDIT ENTRIES FUNCTIONALITY*/
+  const [editing, setEditing] = useState(null); // which entry is being edited, e.g. { table: "activities", entry: {...} }
+
+  const inputsByTable = {
+    transportation: transportationInputs,
+    accommodations: accommodationsInputs,
+    activities: activityInputs,
+  };
+
+  // swap the old entry for the updated one so the card changes right away
+  function saveEdit(updated){
+    if (editing.table === "transportation") { setTransportation(list => list.map(e => e.id === updated.id ? updated : e)); }
+    if (editing.table === "accommodations") { setAccommodations(list => list.map(e => e.id === updated.id ? updated : e)); }
+    if (editing.table === "activities") { setActivities(list => list.map(e => e.id === updated.id ? updated : e)); }
+  }
+
+
   return (
     <div class="dashboard">
 
@@ -188,6 +206,7 @@ export default function Dashboard({navigatePage, userId}) {
             destination = {t.arrive_location}
             mode = {t.type}
             id = {t.confirmation}
+            onEdit = {() => setEditing({ table: "transportation", entry: t })}
           />
         ))}
 
@@ -198,12 +217,14 @@ export default function Dashboard({navigatePage, userId}) {
               location = {a.city}
               date = {a.check_in?.slice(0, 10)}
               isCheckIn = {true}
+              onEdit = {() => setEditing({ table: "accommodations", entry: a })}
             />
             <AccomodationInfoDisplayCard
               name = {a.name}
               location = {a.city}
               date = {a.check_out?.slice(0, 10)}
               isCheckIn = {false}
+              onEdit = {() => setEditing({ table: "accommodations", entry: a })}
             />
           </div>
         ))}
@@ -215,8 +236,22 @@ export default function Dashboard({navigatePage, userId}) {
             location = {a.location}
             date = {a.date?.slice(0, 10)}
             startTime = {a.start_time}
+            onEdit = {() => setEditing({ table: "activities", entry: a })}
           />
         ))}
+
+        {editing && (
+          <ManualEntryPopup
+            isOpen={true}
+            onClose={() => setEditing(null)}
+            title="Edit Entry"
+            inputs={inputsByTable[editing.table]}
+            endpoint={`http://localhost:3001/trips/${currentTripID}/${editing.table}/${editing.entry.id}`}
+            method="PUT"
+            initialValues={editing.entry}
+            onSaved={saveEdit}
+          />
+        )}
 
         <div style={{height:"2rem"}}></div>
         <h2>Log Out:</h2>

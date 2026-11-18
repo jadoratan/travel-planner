@@ -8,6 +8,8 @@ export default function ManualEntryPopup({
     inputs,
     endpoint = 'http://localhost:3001/manual-entry',
     extraData = {}, // fields to send that aren't in the form, e.g. { user_id }
+    method = 'POST', // 'PUT' when editing an entry
+    initialValues = {}, // existing entry info to fill in when editing
 }){
 
     //useRef helps close the <dialog> / popup modal which is hidden initially
@@ -37,7 +39,7 @@ export default function ManualEntryPopup({
 
         try {
             const response = await fetch(endpoint, {
-                method: 'POST',
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...values, ...extraData }),
             });
@@ -54,12 +56,6 @@ export default function ManualEntryPopup({
         }
     };
 
-
-      // in the form:
-  //   {input.options
-  //     ? <select name={input.name} defaultValue="" required>...</select>
-  //     : <input name={input.name} type={input.type ?? "text"} placeholder={input.label} aria-label={input.label} />}
-  //   <button type="submit">Done!</button>   ← remove onClick={onClose}
   return (
     <dialog
       ref={popupRef}
@@ -70,7 +66,7 @@ export default function ManualEntryPopup({
         {inputs.map((input) => (
           <div key={input.name}>
             {input.options ? (
-              <select name={input.name} defaultValue="" required>
+              <select name={input.name} defaultValue={initialValues[input.name] ?? ""} required>
                 <option value="" disabled>{input.label}</option>
                 {input.options.map((opt) => (
                   <option key={opt} value={opt}>{opt}</option>
@@ -82,6 +78,7 @@ export default function ManualEntryPopup({
                 type={input.type ?? "text"}
                 placeholder={input.label}
                 aria-label={input.label}
+                defaultValue={initialValues[input.name] ?? ""}
               />
             )}
           </div>

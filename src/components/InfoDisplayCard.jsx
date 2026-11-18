@@ -1,8 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
-
 import './InfoDisplayCard.css'
 
-function InfoDisplayCard({date, time, title, description}) {
+function InfoDisplayCard({date, time, title, description, onEdit}) {
     return(
         <div className='trip-item'>
             <div className = "trip-time">
@@ -14,40 +12,44 @@ function InfoDisplayCard({date, time, title, description}) {
                 <h2>{title}</h2>
                 <p>{description}</p>
               </div>
+              {onEdit && <button onClick={onEdit}>Edit</button>}
             </div>
         </div>
     );
 }
 
-function TransportInfoDisplayCard({mode, departure, destination, date, time, id}){
+function TransportInfoDisplayCard({mode, departure, destination, date, time, id, onEdit}){
   return(
     <InfoDisplayCard
       date = {date}
       time = {time}
       title = {`${mode}: ${departure} -> ${destination}`}
       description = {`ID: ${id}`}
+      onEdit = {onEdit}
     />
   );
 }
 
-function AccomodationInfoDisplayCard({name, location, date, time, isCheckIn}){
+function AccomodationInfoDisplayCard({name, location, date, time, isCheckIn, onEdit}){
   return(
     <InfoDisplayCard
       date = {date}
       time = {time}
       title = {isCheckIn ? `Check In: ${name}` : `Check Out: ${name}`}
       description = {`at ${location}`}
+      onEdit = {onEdit}
     />
   );
 }
 
-function ActivityInfoDisplayCard({name, location, date, startTime}){
+function ActivityInfoDisplayCard({name, location, date, startTime, onEdit}){
   return(
     <InfoDisplayCard
       date = {date}
       time = {startTime}
       title = {name}
       description = {`at ${location}`}
+      onEdit = {onEdit}
     />
   );
 }
