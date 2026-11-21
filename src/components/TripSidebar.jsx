@@ -1,13 +1,18 @@
+import './TripSidebar.css';
+
 export default function TripSidebar({trips, selectTrip}) {
     return(
-        <div>
+        <ul className = "trip-sidebar-list">
                 {trips.map((trip) => 
-                    (<div key = {trip.id}>
-                        <button onClick = {() => selectTrip(trip.id)}>
-                            {trip.name}
+                    (<li key = {trip.id}>
+                        <button 
+                        onClick = {() => selectTrip(trip.id)}
+                        className = "trip-sidebar-item"
+                        >
+                            <span className="trip-name" >{trip.name}</span>
                         </button>
-                    </div>)
+                    </li>)
                 )}
-        </div>
+        </ul>
     );
 }

@@ -4,6 +4,7 @@ import TripSidebar from '../components/TripSidebar';
 import {ActivityInfoDisplayCard, AccomodationInfoDisplayCard, TransportInfoDisplayCard} from '../components/InfoDisplayCard'
 
 import './Dashboard.css';
+import '../components/TripSidebar.css'
 
 export default function Dashboard({navigatePage, userId}) {
 
@@ -132,10 +133,16 @@ export default function Dashboard({navigatePage, userId}) {
 
 
   return (
-    <div class="dashboard">
+    <div className="dashboard">
 
-      <div class="sidebar">
-        <button name="new trip" onClick={() => setNewTripPopupOpen(true)}>+ New Trip </button>
+      <div className="sidebar">
+        <button 
+        name="new trip" 
+        onClick={() => setNewTripPopupOpen(true)}
+        className = "sidebar-new-trip"
+        >
+          + New Trip
+        </button>
         <ManualEntryPopup
           isOpen={newTripPopupOpen}
           onClose={() => setNewTripPopupOpen(false)}

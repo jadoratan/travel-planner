@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Nunito:wght@400;600;700&display=swap');
+
+/* Uses the same palette variables as Login.css.
+   If this file loads on a page where Login.css isn't imported, uncomment: */
+
+:root {
+  --wf-blush: #ffede5;
+  --wf-sun: #ffd0b8;
+  --wf-sage: #9fc0b8;
+  --wf-sea: #6d9db0;
+  --wf-teal: #2f5552;
+  --wf-teal-hover: #254441;
+  --wf-plum: #3a1f4a;
+  --wf-ink: #3f6b73;
+}
+
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 280px;
+  min-height: 100vh;
+  padding: 24px 16px;
+  background: var(--wf-blush);
+  border-right: 1px solid rgba(159, 192, 184, 0.6);
+  font-family: 'Nunito', system-ui, sans-serif;
+  color: var(--wf-plum);
+}
+
+/* ---------- Header row: "MY TRIPS · 3" + new trip ---------- */
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px 4px;
+}
+
+.sidebar-title {
+  margin: 0;
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--wf-ink);
+}
+
+.sidebar-new-trip {
+  padding: 4px 6px;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--wf-plum);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.sidebar-new-trip:hover {
+  background: rgba(159, 192, 184, 0.35);
+}
+
+/* ---------- Trip list ---------- */
+
+.trip-sidebar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trip-sidebar-item {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  font: inherit;
+  text-align: left;
+  color: var(--wf-plum);
+  background: transparent;
+  border: 0;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  border: 2px solid var(--wf-sage);
+  border-radius: 14px;
+}
+
+.trip-sidebar-item:hover {
+  background:   var(--wf-sage);
+  border-color: var(--wf-sea);
+}
+
+
+.trip-sidebar-item:focus-visible {
+  outline: 3px solid var(--wf-sea);
+  outline-offset: 2px;
+}
+
+.trip-sidebar-item.is-active {
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(47, 85, 82, 0.12), inset 4px 0 0 var(--wf-teal);
+}
+
+.trip-name {
+  display: block;
+  overflow: hidden;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trip-empty {
+  margin: 8px;
+  font-size: 0.875rem;
+  color: var(--wf-ink);
+}
+
+/* ---------- Small screens: sidebar becomes a top strip ---------- */
+
+@media (max-width: 820px) {
+  .sidebar {
+    width: 100%;
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 1px solid rgba(159, 192, 184, 0.6);
+  }
+
+  .trip-sidebar-list {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .trip-sidebar-item {
+    width: auto;
+    flex: none;
+  }
+}
