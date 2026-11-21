@@ -50,4 +50,38 @@ app.post('/login', async function(req, res) {
     }
 });
 
+//delete a trip; its transportation/accommodations/activities cascade via ON DELETE CASCADE
+app.delete('/trips/:id', async function(req, res) {
+    try {
+        const result = await pool.query('DELETE FROM trips WHERE id = $1', [req.params.id]);
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Trip not found' });
+        }
+        res.status(204).end();
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+});
+
+//delete a single entry; table names can't be query parameters, so only these are allowed
+const ENTRY_TABLES = ['transportation', 'accommodations', 'activities'];
+
+app.delete('/:type/:id', async function(req, res) {
+    const { type, id } = req.params;
+    if (!ENTRY_TABLES.includes(type)) {
+        return res.status(404).json({ error: 'Unknown entry type' });
+    }
+    try {
+        const result = await pool.query(`DELETE FROM ${type} WHERE id = $1`, [id]);
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Entry not found' });
+        }
+        res.status(204).end();
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+});
+
 app.listen(3001, () => console.log('Server running on port 3001'))
