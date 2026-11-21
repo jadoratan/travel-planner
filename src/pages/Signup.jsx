@@ -124,7 +124,7 @@ export default function Signup({navigatePage}) {
             handleEvent={handleUsernameChange}
             type="text"
         />
-        {validFields?.username ? <p>VALID</p> : <p>INVALID</p> }
+        {validFields?.username ? <h2>VALID</h2> : <h2>INVALID: Must be at least 4 characters</h2> }
 
          
 
@@ -134,7 +134,7 @@ export default function Signup({navigatePage}) {
             handleEvent={handlePasswordChange}
             type="password"
         />
-        {validFields?.password ? <p>VALID</p> : <p>INVALID</p> }
+        {validFields?.password ? <h2>VALID</h2> : <h2>INVALID: Must be at least 8 characters</h2> }
 
          
 
@@ -143,7 +143,6 @@ export default function Signup({navigatePage}) {
             /*className="signup-button"*/
             className="login-button login-button--full"
             disabled={!isFormValid}
-
         >
             Sign up
         </button>

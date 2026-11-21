@@ -1,45 +1,133 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ManualEntryPopup from '../components/ManualEntryPopup';
 import TripSidebar from '../components/TripSidebar';  
+import {ActivityInfoDisplayCard, AccomodationInfoDisplayCard, TransportInfoDisplayCard} from '../components/InfoDisplayCard'
 
 import './Dashboard.css';
 
-export default function Dashboard({navigatePage}) {
+export default function Dashboard({navigatePage, userId}) {
 
 
   /* MANUAL ENTRY FUNCTIONALITY*/
-  const [flightPopupOpen, setFlightPopupOpen] = useState(false);
-  const flightInputs = [
-    { label: "Mode of transport", options: ["Flight", "Train", "Bus", "Car", "Ferry", "Other"] },
-    "Departure", "Destination", "Departure Date", "Arrival Date", "Budget (USD)", "Flight ID / Reference Number"
+  const [transportationPopupOpen, setTransportationPopupOpen] = useState(false);
+  const transportationInputs = [
+    { name: "type", label: "Mode of transport", options: ["Flight", "Train", "Bus", "Car", "Ferry", "Other"] },
+    { name: "depart_location", label: "Departing From" },
+    { name: "arrive_location", label: "Arriving At" },
+    { name: "depart_date", label: "Departure Date" },
+    { name: "depart_time", label: "Departure Time" },
+    { name: "arrive_date", label: "Arrive Date" },
+    { name: "arrive_time", label: "Arrive Time" },
+    { name: "cost", label: "Cost" },
+    { name: "confirmation", label: "Flight ID / Reference Number" },
   ];
 
   const [accommodationsPopupOpen, setAccommodationsPopupOpen] = useState(false);
-  const accommodationsInputs = ["Place name", "Street Address", "Address Line 2", "City", "State/Province", "Zip Code", "Country",
-    "Check-in date", "Check-out date", "Total cost"];
+  const accommodationsInputs = [
+    { name: "name", label: "Place Name" },
+    { name: "street_address", label: "Street Address" },
+    { name: "address_line_2", label: "Address Line 2" },
+    { name: "city", label: "City" },
+    { name: "state_province", label: "State/Province" },
+    { name: "zip_code", label: "Zip Code" },
+    { name: "country", label: "Country" },
+    { name: "check_in", label: "Check-in Date" },
+    { name: "check_out", label: "Check-out Date" },
+    { name: "cost", label: "Total Cost" },
+    { name: "confirmation", label: "Confirmation Number"}
+  ];
 
   const [activityPopupOpen, setActivityPopupOpen] = useState(false);
-  const activityInputs = ["Activity name", "Location", "Date", "Start time", "End time", "Cost"];
+  const activityInputs = [
+    { name: "name", label: "Activity Name" },
+    { name: "location", label: "Location" },
+    { name: "date", label: "Date" },
+    { name: "start_time", label: "Start Time" },
+    { name: "end_time", label: "End Time" },
+    { name: "cost", label: "Cost" },
+  ];
 
   const [newTripPopupOpen, setNewTripPopupOpen] = useState(false);
-  const tripInputs = ["Trip Name", "Destination", "Start Date", "End Date", "Budget"];
+  const tripInputs = [
+    { name: "name", label: "Trip Name" },
+    { name: "destination", label: "Destination" },
+    { name: "start_date", label: "Start Date" },
+    { name: "end_date", label: "End Date" },
+  ];
 
 
 
   /* TRIP FILTER FUNCTIONALITY*/
 
   //placeholder
-  const tripList = ([
-    { name: "Japan", id: 1},
-    { name: "Italy", id: 2},
-    { name: "Australia", id: 3}
-  ]);
+  const [trips, setTrips] = useState([]);
+  const [currentTripID, setCurrentTripID] = useState(null);
 
-  const [currentTripID, setCurrentTripID] = useState(1);
-  const displayTrip = tripList.find(t => t.id === currentTripID);
+  // load this user's saved trips whenever the logged-in user changes
+  useEffect(() => {
+    if (!userId) { return; }
+    fetch(`http://localhost:3001/trips?user_id=${userId}`)
+      .then((res) => {
+        if (!res.ok) { throw new Error(`Request failed with status ${res.status}`); }
+        return res.json();
+      })
+      .then((data) => {
+        setTrips(data);
+        if (data.length > 0) { setCurrentTripID(data[0].id); }
+      })
+      .catch((err) => console.error(err));
+  }, [userId]);
+
+  // todo: do we still need this?
+  const displayTrip = trips.find(t => t.id === currentTripID);
 
   function filterCurrentTrip(id){
     setCurrentTripID(id);
+  }
+
+
+
+  /* DISPLAY ENTRIES FUNCTIONALITY*/
+  const [transportation, setTransportation] = useState([]);
+  const [accommodations, setAccommodations] = useState([]);
+  const [activities, setActivities] = useState([]);
+
+  // load the current trip's entries whenever the selected trip changes
+  useEffect(() => {
+    if (!currentTripID) { return; }
+
+    fetch(`http://localhost:3001/trips/${currentTripID}/transportation`)
+      .then((res) => res.json())
+      .then((data) => setTransportation(data))
+      .catch((err) => console.error(err));
+
+    fetch(`http://localhost:3001/trips/${currentTripID}/accommodations`)
+      .then((res) => res.json())
+      .then((data) => setAccommodations(data))
+      .catch((err) => console.error(err));
+
+    fetch(`http://localhost:3001/trips/${currentTripID}/activities`)
+      .then((res) => res.json())
+      .then((data) => setActivities(data))
+      .catch((err) => console.error(err));
+  }, [currentTripID]);
+
+
+
+  /* EDIT ENTRIES FUNCTIONALITY*/
+  const [editing, setEditing] = useState(null); // which entry is being edited, e.g. { table: "activities", entry: {...} }
+
+  const inputsByTable = {
+    transportation: transportationInputs,
+    accommodations: accommodationsInputs,
+    activities: activityInputs,
+  };
+
+  // swap the old entry for the updated one so the card changes right away
+  function saveEdit(updated){
+    if (editing.table === "transportation") { setTransportation(list => list.map(e => e.id === updated.id ? updated : e)); }
+    if (editing.table === "accommodations") { setAccommodations(list => list.map(e => e.id === updated.id ? updated : e)); }
+    if (editing.table === "activities") { setActivities(list => list.map(e => e.id === updated.id ? updated : e)); }
   }
 
 
@@ -53,9 +141,12 @@ export default function Dashboard({navigatePage}) {
           onClose={() => setNewTripPopupOpen(false)}
           title="New Trip Information"
           inputs={tripInputs}
+          endpoint="http://localhost:3001/trips"
+          extraData={{ user_id: userId }}
+          onSaved={(trip) => { setTrips(t => [...t, trip]); setCurrentTripID(trip.id); }}
         />
 
-        <TripSidebar trips={tripList} selectTrip={filterCurrentTrip}></TripSidebar>
+        <TripSidebar trips={trips} selectTrip={filterCurrentTrip}></TripSidebar>
       </div>
 
 
@@ -68,37 +159,99 @@ export default function Dashboard({navigatePage}) {
         <h1>DASHBOARD PAGE</h1>
         <h2>Add Your Plans!</h2>
 
-        <button name="flight" onClick={() => setFlightPopupOpen(true)}>flight ✈️</button>
+        <button name="transportation" disabled={!currentTripID} onClick={() => setTransportationPopupOpen(true)}>transportation </button>
         <ManualEntryPopup
-          isOpen={flightPopupOpen}
-          onClose={() => setFlightPopupOpen(false)}
-          title="Flight Information"
-          inputs={flightInputs}
+          isOpen={transportationPopupOpen}
+          onClose={() => setTransportationPopupOpen(false)}
+          title="Transportation Information"
+          inputs={transportationInputs}
+          endpoint={`http://localhost:3001/trips/${currentTripID}/transportation`}
+          onSaved={(entry) => setTransportation(t => [...t, entry])}
         />
 
         <div style={{height:"rem"}}></div>
 
-        <button name="accommodations" onClick={() => setAccommodationsPopupOpen(true)}>accommodations</button>
+        <button name="accommodations" disabled={!currentTripID} onClick={() => setAccommodationsPopupOpen(true)}>accommodations</button>
         <ManualEntryPopup
           isOpen={accommodationsPopupOpen}
           onClose={() => setAccommodationsPopupOpen(false)}
           title="Accommodations Information"
           inputs={accommodationsInputs}
+          endpoint={`http://localhost:3001/trips/${currentTripID}/accommodations`}
+          onSaved={(entry) => setAccommodations(a => [...a, entry])}
         />
 
         <div style={{height:"rem"}}></div>
 
-        <button name="activity" onClick={() => setActivityPopupOpen(true)}>activity</button>
+        <button name="activity" disabled={!currentTripID} onClick={() => setActivityPopupOpen(true)}>activity</button>
         <ManualEntryPopup
           isOpen={activityPopupOpen}
           onClose={() => setActivityPopupOpen(false)}
           title="Activity Information"
           inputs={activityInputs}
+          endpoint={`http://localhost:3001/trips/${currentTripID}/activities`}
+          onSaved={(entry) => setActivities(a => [...a, entry])}
         />
 
         <div style={{height:"2rem"}}></div>
 
-        <h2>Current Trip: {displayTrip.name}</h2>
+        <h2>Current Trip: {displayTrip?.name ?? "none selected"}</h2>
+
+        {transportation.map((t) => (
+          <TransportInfoDisplayCard
+            key = {t.id}
+            date = {t.depart_date?.slice(0, 10)}
+            time = {t.depart_time}
+            departure = {t.depart_location}
+            destination = {t.arrive_location}
+            mode = {t.type}
+            id = {t.confirmation}
+            onEdit = {() => setEditing({ table: "transportation", entry: t })}
+          />
+        ))}
+
+        {accommodations.map((a) => (
+          <div key = {a.id}>
+            <AccomodationInfoDisplayCard
+              name = {a.name}
+              location = {a.city}
+              date = {a.check_in?.slice(0, 10)}
+              isCheckIn = {true}
+              onEdit = {() => setEditing({ table: "accommodations", entry: a })}
+            />
+            <AccomodationInfoDisplayCard
+              name = {a.name}
+              location = {a.city}
+              date = {a.check_out?.slice(0, 10)}
+              isCheckIn = {false}
+              onEdit = {() => setEditing({ table: "accommodations", entry: a })}
+            />
+          </div>
+        ))}
+
+        {activities.map((a) => (
+          <ActivityInfoDisplayCard
+            key = {a.id}
+            name = {a.name}
+            location = {a.location}
+            date = {a.date?.slice(0, 10)}
+            startTime = {a.start_time}
+            onEdit = {() => setEditing({ table: "activities", entry: a })}
+          />
+        ))}
+
+        {editing && (
+          <ManualEntryPopup
+            isOpen={true}
+            onClose={() => setEditing(null)}
+            title="Edit Entry"
+            inputs={inputsByTable[editing.table]}
+            endpoint={`http://localhost:3001/trips/${currentTripID}/${editing.table}/${editing.entry.id}`}
+            method="PUT"
+            initialValues={editing.entry}
+            onSaved={saveEdit}
+          />
+        )}
 
         <div style={{height:"2rem"}}></div>
         <h2>Log Out:</h2>
