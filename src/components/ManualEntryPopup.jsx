@@ -3,9 +3,13 @@ import { useEffect, useRef, useState } from 'react';
 export default function ManualEntryPopup({
     isOpen,
     onClose,
+    onSaved,
     title,
     inputs,
     endpoint = 'http://localhost:3001/manual-entry',
+    extraData = {}, // fields to send that aren't in the form, e.g. { user_id }
+    method = 'POST', // 'PUT' when editing an entry
+    initialValues = {}, // existing entry info to fill in when editing
 }){
 
     //useRef helps close the <dialog> / popup modal which is hidden initially
@@ -29,21 +33,24 @@ export default function ManualEntryPopup({
     const handleSubmit = async (e) => {
         e.preventDefault(); //prevents the whole app from reloading on submit
 
+        const form = e.currentTarget;
         const values = Object.fromEntries(new FormData(e.currentTarget).entries());
         setError('');
 
         try {
             const response = await fetch(endpoint, {
-                method: 'POST',
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(values),
+                body: JSON.stringify({ ...values, ...extraData }),
             });
 
             if (!response.ok) {
                 throw new Error(`Request failed with status ${response.status}`);
             }
-
-            onClose();
+            const saved = await response.json();
+            form.reset();
+            onSaved?.(saved); // let Dashboard only refresh / select new item
+            onClose(); // close only after a successful save
         } catch (submitError) {
             setError(submitError instanceof Error ? submitError.message : 'Unable to submit entry.');
         }
@@ -56,24 +63,30 @@ export default function ManualEntryPopup({
     >
       <h2>{title}</h2>
       <form onSubmit={handleSubmit}>
-        {inputs.map((input, i) => (
-          <div key={i}>
-            {typeof input === "string" ? (
-              <input name={input} aria-label={input} placeholder={input} />
-            ) : (
-              <select defaultValue="">
+        {inputs.map((input) => (
+          <div key={input.name}>
+            {input.options ? (
+              <select name={input.name} defaultValue={initialValues[input.name] ?? ""} required>
                 <option value="" disabled>{input.label}</option>
                 {input.options.map((opt) => (
                   <option key={opt} value={opt}>{opt}</option>
-                ))}
+               ))}
               </select>
+            ) : (
+              <input
+                name={input.name}
+                type={input.type ?? "text"}
+                placeholder={input.label}
+                aria-label={input.label}
+                defaultValue={initialValues[input.name] ?? ""}
+              />
             )}
           </div>
         ))}
-        <button type="submit" onClick={onClose}>Done!</button>
+        <button type="submit">Done!</button>
         {error && <p role="alert">{error}</p>}
         <div></div>
-        <button type="button" onClick={onClose}>cancel</button>
+        <button type="button" onClick={onClose}>Close</button>
       </form>
     </dialog>
   );
