@@ -1,78 +1,190 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Cormorant+Garamond:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700&display=swap');
+
+/* ---------- Timeline container with vertical line ---------- */
+
 .trip-list {
+  position: relative;
   max-width: 720px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 24px 0 44px;
+  font-family: 'Nunito', system-ui, sans-serif;
 }
 
+.trip-list::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 14px;
+  width: 3px;
+  background: var(--wf-sea);
+  border-radius: 3px;
+}
+
+/* ---------- One entry: date heading on top, blush card below ---------- */
+
 .trip-item {
+  position: relative;
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 24px;
-  align-items: stretch;
+  grid-template-rows: auto auto;
   margin-bottom: 24px;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.08);   /* replaces the purple */
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 32px;
   text-align: left;
 }
 
-.trip-time {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
-  min-width: 90px;
-  padding-right: 20px;
-  border-right: 3px solid rgba(255, 255, 255, 0.3);
-  text-align: right;
+/* the blush card, drawn behind the time + event */
+.trip-item::before {
+  content: '';
+  grid-row: 2;
+  grid-column: 1 / -1;
+  background: var(--wf-blush);
+  border-radius: 24px;
+  box-shadow: 0 6px 18px rgba(47, 85, 82, 0.15);
 }
 
-.trip-date {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 1;
-  color: #fff;
+/* dot on the timeline line */
+.trip-item::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: -37px;
+  width: 14px;
+  height: 14px;
+  background: var(--wf-sea);
+  border-radius: 50%;
 }
 
-.trip-day {
-  margin-top: 4px;
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.75);
+.trip-item:nth-child(3n + 2)::after {
+  background: var(--wf-teal);
 }
 
-.trip-event {
+.trip-item:nth-child(3n + 3)::after {
+  background: var(--wf-sun);
+}
+
+/* ---------- Date + time (the two h3s) ---------- */
+
+/* lets the two h3s sit directly in the grid, without changing your JSX */
+.trip-item .trip-time {
+  display: contents;
+}
+
+/* date = heading above the card */
+.trip-item .trip-time h3:first-child {
+  grid-row: 1;
+  grid-column: 1 / -1;
+  margin: 0 0 8px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--wf-plum);
+}
+
+/* time = small label on the left of the card */
+.trip-item .trip-time h3:last-child {
+  position: relative;
+  z-index: 1;
+  grid-row: 2;
+  grid-column: 1;
+  align-self: center;
+  margin: 0;
+  padding: 20px 0 20px 24px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--wf-teal);
+}
+
+/* ---------- Event text + buttons ---------- */
+
+.trip-item .trip-event {
+  position: relative;
+  z-index: 1;
+  grid-row: 2;
+  grid-column: 2;
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 20px 24px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 24px;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 14px 0 14px 18px;
+  padding: 4px 20px 4px 20px;
+  border-left: 2px dashed var(--wf-sage);
 }
 
-.trip-icon {
-  display: flex;
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  color: rgba(255, 255, 255, 0.75);
+.trip-item .trip-text {
+  flex: 1;
+  min-width: 0;
 }
 
-.trip-icon svg { width: 100%; height: 100%; }
-
-.trip-text h2 {
+.trip-item .trip-text h2 {
   margin: 0 0 4px;
-  font-size: 20px;
-  font-weight: 500;
-  color: #fff;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--wf-plum);
 }
 
-.trip-text p {
+.trip-item .trip-text p {
   margin: 0;
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.875rem;
+  color: var(--wf-ink);
+}
+
+/* outlined pill buttons (Edit, Delete) */
+.trip-item .trip-event button {
+  flex: none;
+  padding: 6px 18px;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--wf-teal);
+  background: transparent;
+  border: 2px solid var(--wf-teal);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.trip-item .trip-event button:hover {
+  color: var(--wf-blush);
+  background: var(--wf-teal);
+}
+
+/* second button (Delete) in plum, tucked closer to Edit */
+.trip-item .trip-event button + button {
+  margin-left: -8px;
+  color: var(--wf-plum);
+  border-color: var(--wf-plum);
+}
+
+.trip-item .trip-event button + button:hover {
+  color: var(--wf-blush);
+  background: var(--wf-plum);
+}
+
+.trip-item .trip-event button:focus-visible {
+  outline: 3px solid var(--wf-sea);
+  outline-offset: 2px;
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 560px) {
+  .trip-list {
+    padding: 0 12px 0 36px;
+  }
+
+  .trip-list::before {
+    left: 10px;
+  }
+
+  .trip-item::after {
+    left: -33px;
+  }
+
+  .trip-item .trip-event {
+    flex-wrap: wrap;
+    padding-right: 12px;
+  }
 }

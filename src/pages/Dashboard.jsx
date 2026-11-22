@@ -154,6 +154,7 @@ export default function Dashboard({navigatePage, userId}) {
         />
 
         <TripSidebar trips={trips} selectTrip={filterCurrentTrip}></TripSidebar>
+        <button className = "logout-button" onClick={() => navigatePage("login")}>log out</button>
       </div>
 
 
@@ -163,10 +164,10 @@ export default function Dashboard({navigatePage, userId}) {
 
 
       <div class="main-content">
-        <h1>DASHBOARD PAGE</h1>
-        <h2>Add Your Plans!</h2>
-
-        <button name="transportation" disabled={!currentTripID} onClick={() => setTransportationPopupOpen(true)}>transportation </button>
+        <h1 className = "title">Dashboard Page</h1>
+        <h2 className = "subheader">Add Your Plans!</h2>
+        <div className = "action-bar">
+        <button name="transportation" className = "action-button" disabled={!currentTripID} onClick={() => setTransportationPopupOpen(true)}>transportation </button>
         <ManualEntryPopup
           isOpen={transportationPopupOpen}
           onClose={() => setTransportationPopupOpen(false)}
@@ -176,9 +177,8 @@ export default function Dashboard({navigatePage, userId}) {
           onSaved={(entry) => setTransportation(t => [...t, entry])}
         />
 
-        <div style={{height:"rem"}}></div>
 
-        <button name="accommodations" disabled={!currentTripID} onClick={() => setAccommodationsPopupOpen(true)}>accommodations</button>
+        <button name="accommodations" className = "action-button" disabled={!currentTripID} onClick={() => setAccommodationsPopupOpen(true)}>accommodations</button>
         <ManualEntryPopup
           isOpen={accommodationsPopupOpen}
           onClose={() => setAccommodationsPopupOpen(false)}
@@ -188,9 +188,7 @@ export default function Dashboard({navigatePage, userId}) {
           onSaved={(entry) => setAccommodations(a => [...a, entry])}
         />
 
-        <div style={{height:"rem"}}></div>
-
-        <button name="activity" disabled={!currentTripID} onClick={() => setActivityPopupOpen(true)}>activity</button>
+        <button name="activity" className = "action-button" disabled={!currentTripID} onClick={() => setActivityPopupOpen(true)}>activity</button>
         <ManualEntryPopup
           isOpen={activityPopupOpen}
           onClose={() => setActivityPopupOpen(false)}
@@ -199,11 +197,15 @@ export default function Dashboard({navigatePage, userId}) {
           endpoint={`http://localhost:3001/trips/${currentTripID}/activities`}
           onSaved={(entry) => setActivities(a => [...a, entry])}
         />
+        </div>
 
         <div style={{height:"2rem"}}></div>
 
-        <h2>Current Trip: {displayTrip?.name ?? "none selected"}</h2>
+        <h2 className='subheader'>{displayTrip?.name ?? "none selected"}</h2>
+        <div style={{height:"2rem"}}></div>
 
+
+        <div className = "trip-list">
         {transportation.map((t) => (
           <TransportInfoDisplayCard
             key = {t.id}
@@ -246,6 +248,7 @@ export default function Dashboard({navigatePage, userId}) {
             onEdit = {() => setEditing({ table: "activities", entry: a })}
           />
         ))}
+         </div>
 
         {editing && (
           <ManualEntryPopup
@@ -260,9 +263,7 @@ export default function Dashboard({navigatePage, userId}) {
           />
         )}
 
-        <div style={{height:"2rem"}}></div>
-        <h2>Log Out:</h2>
-        <button onClick={() => navigatePage("login")}>log out</button>
+        
       </div>
 
     </div>
