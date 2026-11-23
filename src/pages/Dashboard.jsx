@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import ManualEntryPopup from '../components/ManualEntryPopup';
 import TripSidebar from '../components/TripSidebar';  
-import {ActivityInfoDisplayCard, AccomodationInfoDisplayCard, TransportInfoDisplayCard} from '../components/InfoDisplayCard'
+import SortItinerary from '../components/SortItinerary';
+import {ActivityInfoDisplayCard, AccomodationInfoDisplayCard1, AccomodationInfoDisplayCard2, TransportInfoDisplayCard} from '../components/InfoDisplayCard'
 
 import './Dashboard.css';
 import '../components/TripSidebar.css'
@@ -60,7 +61,7 @@ export default function Dashboard({navigatePage, userId}) {
 
   /* TRIP FILTER FUNCTIONALITY*/
 
-  //placeholder
+  //shows which trip user has selected
   const [trips, setTrips] = useState([]);
   const [currentTripID, setCurrentTripID] = useState(null);
 
@@ -79,13 +80,11 @@ export default function Dashboard({navigatePage, userId}) {
       .catch((err) => console.error(err));
   }, [userId]);
 
-  // todo: do we still need this?
   const displayTrip = trips.find(t => t.id === currentTripID);
 
   function filterCurrentTrip(id){
     setCurrentTripID(id);
   }
-
 
 
   /* DISPLAY ENTRIES FUNCTIONALITY*/
@@ -113,7 +112,7 @@ export default function Dashboard({navigatePage, userId}) {
       .catch((err) => console.error(err));
   }, [currentTripID]);
 
-
+  
 
   /* EDIT ENTRIES FUNCTIONALITY*/
   const [editing, setEditing] = useState(null); // which entry is being edited, e.g. { table: "activities", entry: {...} }
@@ -157,15 +156,13 @@ export default function Dashboard({navigatePage, userId}) {
         <button className = "logout-button" onClick={() => navigatePage("login")}>log out</button>
       </div>
 
-
-
       <div style={{height:"3rem"}}></div>
-
-
 
       <div class="main-content">
         <h1 className = "title">Dashboard Page</h1>
         <h2 className = "subheader">Add Your Plans!</h2>
+
+        {/* ADDING TRIP INFO ACTIVATION BAR */}
         <div className = "action-bar">
         <button name="transportation" className = "action-button" disabled={!currentTripID} onClick={() => setTransportationPopupOpen(true)}>transportation </button>
         <ManualEntryPopup
@@ -204,51 +201,15 @@ export default function Dashboard({navigatePage, userId}) {
         <h2 className='subheader'>{displayTrip?.name ?? "none selected"}</h2>
         <div style={{height:"2rem"}}></div>
 
-
-        <div className = "trip-list">
-        {transportation.map((t) => (
-          <TransportInfoDisplayCard
-            key = {t.id}
-            date = {t.depart_date?.slice(0, 10)}
-            time = {t.depart_time}
-            departure = {t.depart_location}
-            destination = {t.arrive_location}
-            mode = {t.type}
-            id = {t.confirmation}
-            onEdit = {() => setEditing({ table: "transportation", entry: t })}
-          />
-        ))}
-
-        {accommodations.map((a) => (
-          <div key = {a.id}>
-            <AccomodationInfoDisplayCard
-              name = {a.name}
-              location = {a.city}
-              date = {a.check_in?.slice(0, 10)}
-              isCheckIn = {true}
-              onEdit = {() => setEditing({ table: "accommodations", entry: a })}
-            />
-            <AccomodationInfoDisplayCard
-              name = {a.name}
-              location = {a.city}
-              date = {a.check_out?.slice(0, 10)}
-              isCheckIn = {false}
-              onEdit = {() => setEditing({ table: "accommodations", entry: a })}
-            />
-          </div>
-        ))}
-
-        {activities.map((a) => (
-          <ActivityInfoDisplayCard
-            key = {a.id}
-            name = {a.name}
-            location = {a.location}
-            date = {a.date?.slice(0, 10)}
-            startTime = {a.start_time}
-            onEdit = {() => setEditing({ table: "activities", entry: a })}
-          />
-        ))}
-         </div>
+      {/* DISPLAY TRIPS IN CHRONOLOGICAL ORDER */}
+      <div className = "trip-list">
+        <SortItinerary
+          transportation={transportation}
+          accommodations={accommodations}
+          activities={activities}
+          setEditing={setEditing}
+        />
+      </div>
 
         {editing && (
           <ManualEntryPopup

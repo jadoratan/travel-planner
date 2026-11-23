@@ -18,40 +18,51 @@ function InfoDisplayCard({date, time, title, description, onEdit}) {
     );
 }
 
-function TransportInfoDisplayCard({mode, departure, destination, date, time, id, onEdit}){
+function TransportInfoDisplayCard({transport, onEdit}){
   return(
     <InfoDisplayCard
-      date = {date}
-      time = {time}
-      title = {`${mode}: ${departure} -> ${destination}`}
-      description = {`ID: ${id}`}
+      date = {transport.depart_date?.slice(0, 10)}
+      time = {transport.depart_time}
+      title = {`${transport.type}: ${transport.depart_location} -> ${transport.arrive_location}`}
+      description = {`ID: ${transport.confirmation}`}
       onEdit = {onEdit}
     />
   );
 }
 
-function AccomodationInfoDisplayCard({name, location, date, time, isCheckIn, onEdit}){
+function AccomodationInfoDisplayCard1({accomodation, onEdit}){
   return(
     <InfoDisplayCard
-      date = {date}
-      time = {time}
-      title = {isCheckIn ? `Check In: ${name}` : `Check Out: ${name}`}
-      description = {`at ${location}`}
+      date = {accomodation.check_in?.slice(0, 10)}
+      title = {`Check In: ${accomodation.name}`}
+      description = {`at ${accomodation.city}`}
       onEdit = {onEdit}
     />
   );
 }
 
-function ActivityInfoDisplayCard({name, location, date, startTime, onEdit}){
+function AccomodationInfoDisplayCard2({accomodation, onEdit}){
   return(
     <InfoDisplayCard
-      date = {date}
-      time = {startTime}
-      title = {name}
-      description = {`at ${location}`}
+      date = {accomodation.check_out?.slice(0, 10)}
+      title = {`Check Out: ${accomodation.name}`}
+      description = {`at ${accomodation.city}`}
       onEdit = {onEdit}
     />
   );
 }
 
-export {InfoDisplayCard, TransportInfoDisplayCard, ActivityInfoDisplayCard, AccomodationInfoDisplayCard}
+function ActivityInfoDisplayCard({activity, onEdit}){
+  return(
+    <InfoDisplayCard
+      date = {activity.date?.slice(0, 10)}
+      time = {activity.start_time}
+      title = {activity.name}
+      description = {`at ${activity.location}`}
+      onEdit = {onEdit}
+    />
+  );
+}
+
+
+export {InfoDisplayCard, TransportInfoDisplayCard, ActivityInfoDisplayCard, AccomodationInfoDisplayCard1, AccomodationInfoDisplayCard2}
