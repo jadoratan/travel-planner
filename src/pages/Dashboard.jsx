@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import ManualEntryPopup from '../components/ManualEntryPopup';
+import AIPopup from '../components/AIPopup';
 import TripSidebar from '../components/TripSidebar';  
 import SortItinerary from '../components/SortItinerary';
+
 import {ActivityInfoDisplayCard, AccomodationInfoDisplayCard1, AccomodationInfoDisplayCard2, TransportInfoDisplayCard} from '../components/InfoDisplayCard'
 
 import './Dashboard.css';
@@ -48,6 +50,8 @@ export default function Dashboard({navigatePage, userId}) {
     { name: "end_time", label: "End Time" },
     { name: "cost", label: "Cost" },
   ];
+
+  const [AIPopupOpen, setAIPopupOpen] = useState(false);
 
   const [newTripPopupOpen, setNewTripPopupOpen] = useState(false);
   const tripInputs = [
@@ -194,6 +198,14 @@ export default function Dashboard({navigatePage, userId}) {
           endpoint={`http://localhost:3001/trips/${currentTripID}/activities`}
           onSaved={(entry) => setActivities(a => [...a, entry])}
         />
+
+
+        <button name="AI Suggestions" className = "action-button" disabled={!currentTripID} onClick={() => setAIPopupOpen(true)}>AI Suggestions</button>
+        <AIPopup
+          isOpen={AIPopupOpen}
+          onClose={() => setAIPopupOpen(false)}
+        />
+        
         </div>
 
         <div style={{height:"2rem"}}></div>
