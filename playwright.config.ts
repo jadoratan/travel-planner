@@ -16,7 +16,7 @@ export default defineConfig({
   testDir: './tests',
   reporter: 'html',
   use: {
-    baseURL: 'http://127.0.0.1:5173/', // Change to http://localhost:3000 if using CRA/Next.js
+    baseURL: 'http://localhost:5173/', // Change to http://localhost:3000 if using CRA/Next.js
     trace: 'on-first-retry',
   },
   projects: [
@@ -27,7 +27,7 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run dev', // Change to 'npm start' if using Create React App
-    url: 'http://127.0.0.1:5173/',
+    url: 'http://localhost:5173/',
     reuseExistingServer: true,
   },
 });
