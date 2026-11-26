@@ -1,4 +1,4 @@
-export function randomLetters(length = 10): string {
+export function randomLetters(length = 10) {
   const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const bytes = crypto.getRandomValues(new Uint8Array(length));
   return Array.from(bytes, (byte) => letters[byte % letters.length]).join('');

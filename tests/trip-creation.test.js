@@ -1,59 +1,12 @@
 import { test, expect } from '@playwright/test';
-
-// The app switches pages with React state, not URLs, so every flow starts at '/'
-// (the login page) and moves between pages by clicking buttons.
-async function logIn(page, username, password) {
-    await page.getByPlaceholder('enter username').fill(username);
-    await page.getByPlaceholder('enter password').fill(password);
-    await page.getByRole('button', { name: /log in/i }).click();
-    await expect(page.getByRole('heading', { name: 'DASHBOARD PAGE' })).toBeVisible();
-}
-
-async function signUpAndLogIn(page) {
-    // must pass the signup regex rules: letters-only names, MM/DD/YYYY dob, \w-only username/password
-    const username = `testuser${Date.now()}`;
-    const password = 'Testpassword123';
-
-    await page.goto('/');
-    await page.getByRole('button', { name: /sign up/i }).click();
-    await expect(page.getByRole('heading', { name: 'SIGN UP PAGE' })).toBeVisible();
-
-    await page.getByPlaceholder('enter firstName').fill('Test');
-    await page.getByPlaceholder('enter lastName').fill('User');
-    await page.getByPlaceholder('enter dob').fill('01/01/2000');
-    await page.getByPlaceholder('enter username').fill(username);
-    await page.getByPlaceholder('enter password').fill(password);
-    await page.getByRole('button', { name: /sign up/i }).click();
-
-    // wait for signup to finish before logging in
-    await expect(page.getByRole('heading', { name: 'LOG IN PAGE' })).toBeVisible();
-    await logIn(page, username, password);
-
-    return { username, password };
-}
-
-async function logOut(page) {
-    await page.getByRole('button', { name: /log out/i }).click();
-    await expect(page.getByRole('heading', { name: 'LOG IN PAGE' })).toBeVisible();
-}
-
-async function createTrip(page, { name, destination, startDate, endDate }) {
-    await page.getByRole('button', { name: /new trip/i }).click();
-    await page.getByRole('textbox', { name: /trip name/i }).fill(name);
-    await page.getByRole('textbox', { name: /destination/i }).fill(destination);
-    await page.getByRole('textbox', { name: /start date/i }).fill(startDate);
-    await page.getByRole('textbox', { name: /end date/i }).fill(endDate);
-    await page.getByRole('button', { name: /done/i }).click();
-}
-
-const currentTripHeading = (page) => page.getByRole('heading', { name: /current trip:/i });
-const tripButton = (page, name) => page.getByRole('button', { name, exact: true });
-
-async function expectManualEntryEnabled(page) {
-    await expect(page.getByRole('button', { name: /transportation/i })).toBeEnabled();
-    await expect(page.getByRole('button', { name: /accommodations/i })).toBeEnabled();
-    await expect(page.getByRole('button', { name: /activity/i })).toBeEnabled();
-}
+import {
+    createTrip,
+    currentTripHeading,
+    tripButton,
+    expectManualEntryEnabled,
+    expectManualEntryDisabled,
+} from './helpers/trips';
+import { signUpAndLogIn, logIn, logOut } from './helpers/auth';
 
 
 // a user without an existing trip open cannot open the transportation, accommodations,
@@ -63,9 +16,7 @@ test('user who has no existing trips is creating their first trip', async ({ pag
 
     // confirm that no trip is selected and manual entry options are disabled
     await expect(currentTripHeading(page)).toHaveText('Current Trip: none selected');
-    await expect(page.getByRole('button', { name: /transportation/i })).toBeDisabled();
-    await expect(page.getByRole('button', { name: /accommodations/i })).toBeDisabled();
-    await expect(page.getByRole('button', { name: /activity/i })).toBeDisabled();
+    await expectManualEntryDisabled(page);
 
     await createTrip(page, {
         name: 'Spring Break Japan Trip',
@@ -84,7 +35,7 @@ test('user who has no existing trips is creating their first trip', async ({ pag
 // a user whose saved trips load on login can add another trip, which becomes the
 // current trip, without losing access to the trips they already had
 test('user who has existing trips is creating another trip', async ({ page }) => {
-    const { username, password } = await signUpAndLogIn(page);
+    const user = await signUpAndLogIn(page);
 
     // setup: save a trip, then log out and back in so it loads from the server as an existing trip
     await createTrip(page, {
@@ -95,7 +46,7 @@ test('user who has existing trips is creating another trip', async ({ page }) =>
     });
     await expect(tripButton(page, 'Spring Break Japan Trip')).toBeVisible();
     await logOut(page);
-    await logIn(page, username, password);
+    await logIn(page, user);
 
     // the existing trip is listed and selected by default
     await expect(tripButton(page, 'Spring Break Japan Trip')).toBeVisible();
