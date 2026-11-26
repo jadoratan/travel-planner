@@ -62,6 +62,115 @@
 }
 
 /*transportation accomodation flight buttons*/
+/*
+[GENAI USE]
+
+[prompt]:
+i want these buttons to be side by side with some spacing and a similar button style to the popup
+
+
+```javascriptreact
+<button name="transportation" disabled={!currentTripID} onClick={() => setTransportationPopupOpen(true)}>transportation </button>
+
+        <div style={{height:"rem"}}></div>
+
+        <button name="accommodations" disabled={!currentTripID} onClick={() => setAccommodationsPopupOpen(true)}>accommodations</button>
+
+
+        <div style={{height:"rem"}}></div>
+
+        <button name="activity" disabled={!currentTripID} onClick={() => setActivityPopupOpen(true)}>activity</button>
+       
+
+        <div style={{height:"2rem"}}></div>
+```
+
+[response]:
+Wrap the buttons in one container and drop the spacer divs. The spacing now comes from CSS. Note that height: "rem" in your first two spacers isn't a valid value, so they did nothing anyway.
+
+jsx
+<div className="action-bar">
+  <button
+    type="button"
+    name="transportation"
+    className="action-button"
+    disabled={!currentTripID}
+    onClick={() => setTransportationPopupOpen(true)}
+  >
+    Transportation
+  </button>
+
+  <button
+    type="button"
+    name="accommodations"
+    className="action-button"
+    disabled={!currentTripID}
+    onClick={() => setAccommodationsPopupOpen(true)}
+  >
+    Accommodations
+  </button>
+
+  <button
+    type="button"
+    name="activity"
+    className="action-button"
+    disabled={!currentTripID}
+    onClick={() => setActivityPopupOpen(true)}
+  >
+    Activity
+  </button>
+</div>
+
+Add this to your dashboard CSS (or Popup.css). It uses the same --wf-* variables as the other files:
+
+css
+.action-bar {
+  display: flex;
+  flex-wrap: wrap;     
+  gap: 12px;
+  margin-bottom: 2rem;  
+}
+
+.action-bar .action-button {
+  padding: 12px 28px;
+  font: inherit;
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-weight: 700;
+  color: var(--wf-blush);
+  background: var(--wf-teal);
+  border: 2px solid var(--wf-teal);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.action-bar .action-button:hover:not(:disabled) {
+  background: var(--wf-teal-hover);
+  border-color: var(--wf-teal-hover);
+}
+
+.action-bar .action-button:focus-visible {
+  outline: 3px solid var(--wf-sea);
+  outline-offset: 3px;
+}
+
+
+.action-bar .action-button:disabled {
+  color: rgba(255, 237, 229, 0.85);
+  background: var(--wf-sage);
+  border-color: var(--wf-sage);
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+I capitalized the button text to match the rest of the UI. The buttons are filled teal pills like "Done!" in the popup, and they go muted sage while no trip is selected, which matches your disabled={!currentTripID}. If you'd prefer the lighter outlined look of the popup's "Close" button, give .action-button a transparent background with teal text, and flip it to filled on hover.
+
+[reflection]: This helped make adding items to a trip itinerary easier for the user
+since all the buttons to add items are in a row at the very top instead of stacked vertically.
+I tend to forget the CSS rules especially when it comes to formatting horizontally vs. vertically
+so leveraging AI to deal with the implementation helped save a lot of time in creating a user-friendly layout.
+
+*/
 
 .action-bar {
   display: center;
@@ -114,7 +223,6 @@
   color: var(--wf-plum);
 }
 
-/**/
 .logout-button {
   padding: 12px 28px;
   font: inherit;

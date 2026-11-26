@@ -1,3 +1,71 @@
+/*
+[GENAI USE]
+
+[prompt]: this is the react jsx for a popup form. can you create css for it
+
+rounded corners for the popup and same style as before
+
+```javascriptreact
+ <h2>{title}</h2>
+      <form onSubmit={handleSubmit}>
+        {inputs.map((input) => (
+          <div key={input.name}>
+            <p>{input.name}</p>
+            {input.options ? (
+              <select name={input.name} defaultValue={initialValues[input.name] ?? ""} required>
+                <option value="" disabled>{input.label}</option>
+                {input.options.map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+               ))}
+              </select>
+            ) : (
+              <input
+                name={input.name}
+                type={input.type ?? "text"}
+                placeholder={input.label}
+                aria-label={input.label}
+                defaultValue={initialValues[input.name] ?? ""}
+              />
+            )}
+          </div>
+        ))}
+        <button type="submit">Done!</button>
+        {error && <p role="alert">{error}</p>}
+        <div></div>
+        <button type="button" onClick={onClose}>Close</button>
+      </form>
+```
+[response]: I wrote the styles in Popup.css and an updated ManualEntryPopup-snippet.jsx with class names added. I haven't run either, so check the popup in your app.
+
+Look
+
+The popup is a blush card with 24px rounded corners and a soft shadow, centered over a dimmed plum overlay.
+The heading uses Fraunces, the same as login and sign up.
+Inputs and dropdowns are white pills with the sea-blue border. They turn teal with a sage glow on focus, as on the login page.
+The dropdown has a custom teal arrow, since the browser default doesn't match the pill style.
+"Close" is the outlined button and "Done!" is the filled teal one, side by side. On phones they stack.
+Errors show in red above the buttons, and a disabled primary button gets the muted sage look from before.
+
+JSX changes
+
+Wrapper: your snippet only had the contents, so I added an overlay and a card around it. Keep your existing "if not open, return nothing" check above it.
+Clicking outside: clicking the dimmed background calls onClose, and clicks inside the card don't. Delete the onClick on popup-overlay if you don't want that.
+Labels: each <p>{input.name}</p> is now a <label> tied to its input by htmlFor, so clicking the label focuses the field.
+Button order: the two buttons now sit together at the bottom, so I removed the empty <div></div> between them.
+
+Label text: the labels print input.name as-is. CSS can capitalize the first letter, but a camelCase name like startDate will show as "StartDate". If you want nicer text, show input.label instead, or add a title field to your input config.
+
+If another stylesheet has global button, input, or h2 rules, I prefixed my selectors with .popup so mine should win. If something still looks off, inspect the element and tell me what it shows.
+
+
+[reflection]: surprisingly, it only took this one prompt to get the CSS I wanted (and that
+was without giving Claude a picture of the mockup too). I think the context that it had from
+creating the layout for the login and signup pages as well as the trip sidebar component
+was helpful in informing the layout for the manual entry popup form.
+
+*/
+
+
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700&display=swap');
 
 

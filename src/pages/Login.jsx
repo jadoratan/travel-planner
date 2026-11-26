@@ -112,7 +112,117 @@ export default function Login({ navigatePage, onLogin }) {
     </section>
 
 
-    {/*right panel welcome visual*/}
+    {/*GEN AI USE right panel welcome visual*/}
+    {/*prompt: [attached 2 images of our mockup]
+      we want a split login layout like the first image for a travel planning website but with the colors of the second "wayfare" image.
+
+      current jsx
+
+      return (
+          <>
+          <h1>LOG IN PAGE</h1>
+          <form style={{ padding: '20px' }} onSubmit={handleSubmit}>
+            <TextField
+              fieldName="username"
+              variable={username}
+              handleEvent={handleUsernameChange}
+              type = "text"
+            />
+
+            {username && !validFields.username && <p>Username must be at least 4 letters, numbers, or underscores</p>}
+
+            <div style = {{padding: '10px'}}></div>
+
+            <TextField
+              fieldName="password"
+              variable={password}
+              handleEvent={handlePasswordChange}
+              type = "password"
+            />
+
+            <div style = {{padding: '10px'}}></div>
+
+            <button
+              type="submit"
+              className="login-button"
+            >
+              Log in
+            </button>
+
+            {password && !validFields.password && <p>Password must be at least 8 characters</p>}
+
+            {message && <p>{message}</p>}
+          </form>
+
+
+          <h3>New to the app? Sign up here!</h3>
+          <button
+            className="login-button"
+            onClick={() => navigatePage("signup")}
+          >
+            Sign up
+          </button>
+
+          </>
+        );
+
+      can you create the CSS for it?
+      */}
+      {/*response: [provided this jsx code below for the visual and the css in Login.css]*/}
+      {/*prompt: wow but it's a little offcentered when the screen is smaller [attach picture of example]*/}
+      {/* Part of the off-centering is the narrow-screen layout. The form's max-width and the panel's padding aren't centering the content, and some global styles in your app (centered headings and labels) are leaking in. Wrapping the content in one centered column and forcing left alignment inside it should fix it.
+
+        1. JSX: wrap everything inside <section className="login-panel"> in one div:
+
+        jsx
+        <section className="login-panel">
+          <div className="login-content">
+            <p className="login-brand">Wayfare</p>
+
+          </div>
+        </section>
+
+        2. CSS: add this, and remove max-width: 400px from .login-form and .login-signup since the wrapper handles it now:
+
+        css
+        .login-panel {
+          align-items: center;
+        }
+
+        .login-content {
+          width: 100%;
+          max-width: 400px;
+        }
+
+
+        .login-panel h1,
+        .login-panel h3,
+        .login-panel p,
+        .login-panel label {
+          text-align: left;
+        }
+
+        .login-panel .login-form input {
+          width: 100%;
+          max-width: 100%;
+        }
+
+        @media (max-width: 820px) {
+          .login-panel {
+            padding: 32px 20px;
+          }
+        }
+
+        In your screenshot the inputs are wider than the 400px I set, so another stylesheet is overriding the input width. The .login-panel .login-form input selector above is more specific and should win. If it doesn't, search your other CSS for a global input { width: ... } rule.
+
+        The "Current username:" and "Current password:" lines look like they come from inside your TextField component. I didn't add them and can't see that component. If you don't want them, remove them there. */}
+      {/*reflection: by providing Claude the structure of the jsx code and some pictures, 
+      it was able to write the CSS to conform to our current code so we would not have
+      to change the jsx and possibly mess up the functionality of the web app. providing it
+      concrete pictures of what we wanted the layout to look like, using mockups with
+      high contrast colors and accessible fonts helped decrease the amount of back-and-forth iterations
+      of it generating the implementation for the layout.
+      */}
      <aside className="login-scene" aria-hidden="true">
       <div className="login-sun" />
 
