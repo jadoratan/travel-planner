@@ -34,3 +34,23 @@ export async function fillManualEntry(page, values) {
 
   await popup.getByRole('button', { name: /done/i }).click();
 }
+
+/**
+ * The timeline card whose title or description is exactly `text`, e.g.
+ * 'Flight: LAX -> HND'. An accommodation has two cards (check-in and check-out),
+ * so pass the full title to pick one.
+ * @param {Page} page
+ * @param {string} text
+ */
+export const entryCard = (page, text) =>
+  page.locator('.trip-item').filter({ has: page.getByText(text, { exact: true }) });
+
+/**
+ * Click Edit on an entry's card and wait for the edit popup to open.
+ * @param {Page} page
+ * @param {string} text exact title or description of the card to edit
+ */
+export async function openEditPopup(page, text) {
+  await entryCard(page, text).getByRole('button', { name: 'Edit' }).click();
+  await expect(openPopup(page).getByRole('heading', { name: 'Edit Entry' })).toBeVisible();
+}
