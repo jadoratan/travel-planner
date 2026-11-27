@@ -1,11 +1,27 @@
 import { useEffect, useRef, useState } from 'react';
 import './ManualEntryPopup.css';
+import './AIPopup.css';
 
 
+// fixed-height box that scrolls on its own, so a long reply doesn't push the inputs and buttons off screen
 function AIResponse({response}){
+  const boxRef = useRef(null);
+
+  // jump back to the top whenever a new response comes in
+  useEffect(() => {
+    if (boxRef.current) { boxRef.current.scrollTop = 0; }
+  }, [response]);
+
   return(
-    <div>
-    <p>Gemini: {response}</p>
+    <div
+      ref={boxRef}
+      className="ai-response"
+      tabIndex={0} // lets keyboard users focus the box and scroll it with arrow keys
+      aria-label="Gemini's response"
+      aria-live="polite"
+    >
+      <p className="ai-response-label">Gemini</p>
+      <p className="ai-response-text">{response}</p>
     </div>
   );
 }
@@ -64,6 +80,7 @@ export default function AIPopup({
             setGemResponse(saved.reply);
             
         } catch (submitError) {
+            setGemResponse(''); // clear "thinking..." so it doesn't stay on screen next to the error
             setError(submitError instanceof Error ? submitError.message : 'Unable to send message.');
         }
         
