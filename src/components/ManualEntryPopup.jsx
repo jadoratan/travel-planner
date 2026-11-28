@@ -70,7 +70,7 @@ export default function ManualEntryPopup({
       >
         {inputs.map((input) => (
           <div key={input.name}>
-            <label className = "popup-label">{input.name}: </label>
+            <label className = "popup-label">{input.label}: </label>
             {input.options ? (
               <select name={input.name} defaultValue={initialValues[input.name] ?? ""} required>
                 <option value="" disabled>{input.label}</option>

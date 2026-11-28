@@ -17,12 +17,12 @@ export default function Dashboard({navigatePage, userId}) {
   const [transportationPopupOpen, setTransportationPopupOpen] = useState(false);
   const transportationInputs = [
     { name: "type", label: "Mode of transport", options: ["Flight", "Train", "Bus", "Car", "Ferry", "Other"] },
-    { name: "depart_location", label: "Departing From" },
-    { name: "arrive_location", label: "Arriving At" },
+    { name: "depart_location", label: "Departure Location" },
+    { name: "arrive_location", label: "Arrival Location" },
     { name: "depart_date", label: "Departure Date" },
     { name: "depart_time", label: "Departure Time" },
-    { name: "arrive_date", label: "Arrive Date" },
-    { name: "arrive_time", label: "Arrive Time" },
+    { name: "arrive_date", label: "Arrival Date" },
+    { name: "arrive_time", label: "Arrival Time" },
     { name: "cost", label: "Cost" },
     { name: "confirmation", label: "Flight ID / Reference Number" },
   ];
