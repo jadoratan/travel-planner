@@ -213,6 +213,23 @@ was helpful in informing the layout for the manual entry popup form.
   border-color: var(--wf-teal);
 }
 
+/* delete confirmation (ConfirmPopup) */
+.popup .popup-message {
+  margin: 0 0 24px;
+  text-align: left;
+  color: var(--wf-ink);
+}
+
+.popup .popup-button--danger {
+  background: var(--wf-plum);
+  border-color: var(--wf-plum);
+}
+
+.popup .popup-button--danger:hover {
+  background: var(--wf-teal-hover);
+  border-color: var(--wf-teal-hover);
+}
+
 .popup .popup-button:focus-visible {
   outline: 3px solid var(--wf-sea);
   outline-offset: 3px;
