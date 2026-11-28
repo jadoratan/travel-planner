@@ -5,6 +5,9 @@ import { randomLetters } from './random';
 // (the login page) and moves between pages by clicking buttons. Each helper ends by
 // checking which page it landed on, so a failure points at the step that broke.
 
+/** The login page's heading. @param {Page} page */
+const loginHeading = (page) => page.getByRole('heading', { name: 'Welcome!' });
+
 /** @typedef {import('@playwright/test').Page} Page */
 /** @typedef {{ firstName: string, lastName: string, dob: string, username: string, password: string }} User */
 
@@ -56,7 +59,7 @@ export async function signUp(page, user = newUser()) {
   await page.goto('/');
   await openSignUpPage(page);
   await submitSignUpForm(page, user);
-  await expect(page.getByRole('heading', { name: 'LOG IN PAGE' })).toBeVisible();
+  await expect(loginHeading(page)).toBeVisible();
   return user;
 }
 
@@ -87,5 +90,5 @@ export async function signUpAndLogIn(page, user = newUser()) {
 /** Log out from the dashboard and end on the login page. @param {Page} page */
 export async function logOut(page) {
   await page.getByRole('button', { name: /log out/i }).click();
-  await expect(page.getByRole('heading', { name: 'LOG IN PAGE' })).toBeVisible();
+  await expect(loginHeading(page)).toBeVisible();
 }

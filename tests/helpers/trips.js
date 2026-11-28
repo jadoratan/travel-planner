@@ -16,8 +16,15 @@ export async function createTrip(page, { name, destination, startDate, endDate }
   await page.getByRole('button', { name: /done/i }).click();
 }
 
-/** @param {Page} page */
-export const currentTripHeading = (page) => page.getByRole('heading', { name: /current trip:/i });
+/**
+ * Check which trip is open. The dashboard shows the current trip's name (or
+ * "none selected") as a heading above the timeline.
+ * @param {Page} page
+ * @param {string} name
+ */
+export async function expectCurrentTrip(page, name) {
+  await expect(page.getByRole('heading', { name, exact: true })).toBeVisible();
+}
 
 /** @param {Page} page @param {string} name */
 export const tripButton = (page, name) => page.getByRole('button', { name, exact: true });

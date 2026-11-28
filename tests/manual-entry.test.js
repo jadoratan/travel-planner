@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { signUpAndLogIn, logIn, logOut } from './helpers/auth';
-import { createTrip } from './helpers/trips';
+import { createTrip, expectCurrentTrip } from './helpers/trips';
 import { fillManualEntry, openPopup } from './helpers/manualEntry';
 
 // Transportation, accommodations and activities all use the same ManualEntryPopup,
@@ -74,8 +74,7 @@ test.beforeEach(async ({ page }) => {
     startDate: '2027-04-01',
     endDate: '2027-04-15',
   });
-  await expect(page.getByRole('heading', { name: /current trip:/i }))
-    .toHaveText('Current Trip: Spring Break Japan Trip');
+  await expectCurrentTrip(page, 'Spring Break Japan Trip');
 });
 
 // for transportation, accommodations, and activities
