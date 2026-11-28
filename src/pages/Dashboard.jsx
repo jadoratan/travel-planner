@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import ManualEntryPopup from '../components/ManualEntryPopup';
 import AIPopup from '../components/AIPopup';
+import ConfirmPopup from '../components/ConfirmPopup';
 import TripSidebar from '../components/TripSidebar';  
 import SortItinerary from '../components/SortItinerary';
 
@@ -16,12 +17,12 @@ export default function Dashboard({navigatePage, userId}) {
   const [transportationPopupOpen, setTransportationPopupOpen] = useState(false);
   const transportationInputs = [
     { name: "type", label: "Mode of transport", options: ["Flight", "Train", "Bus", "Car", "Ferry", "Other"] },
-    { name: "depart_location", label: "Departing From" },
-    { name: "arrive_location", label: "Arriving At" },
+    { name: "depart_location", label: "Departure Location" },
+    { name: "arrive_location", label: "Arrival Location" },
     { name: "depart_date", label: "Departure Date" },
     { name: "depart_time", label: "Departure Time" },
-    { name: "arrive_date", label: "Arrive Date" },
-    { name: "arrive_time", label: "Arrive Time" },
+    { name: "arrive_date", label: "Arrival Date" },
+    { name: "arrive_time", label: "Arrival Time" },
     { name: "cost", label: "Cost" },
     { name: "confirmation", label: "Flight ID / Reference Number" },
   ];
@@ -96,6 +97,31 @@ export default function Dashboard({navigatePage, userId}) {
   const [accommodations, setAccommodations] = useState([]);
   const [activities, setActivities] = useState([]);
 
+
+  /* DELETE TRIP FUNCTIONALITY*/
+  const [tripToDelete, setTripToDelete] = useState(null); // the trip the user is being asked to confirm deleting
+
+  // deletes the trip on the server (its entries are deleted with it), then removes it from the sidebar
+  async function deleteTrip(trip){
+    const res = await fetch(`http://localhost:3001/trips/${trip.id}`, { method: 'DELETE' });
+    if (!res.ok) { throw new Error(`Request failed with status ${res.status}`); }
+
+    const remainingTrips = trips.filter(t => t.id !== trip.id);
+    setTrips(remainingTrips);
+
+    // if the open trip was the one deleted, open the first trip that's left
+    if (trip.id === currentTripID) {
+      setCurrentTripID(remainingTrips[0]?.id ?? null);
+    }
+
+    // with no trips left there is nothing to load, so clear the old trip's entries
+    if (remainingTrips.length === 0) {
+      setTransportation([]);
+      setAccommodations([]);
+      setActivities([]);
+    }
+  }
+
   // load the current trip's entries whenever the selected trip changes
   useEffect(() => {
     if (!currentTripID) { return; }
@@ -156,7 +182,14 @@ export default function Dashboard({navigatePage, userId}) {
           onSaved={(trip) => { setTrips(t => [...t, trip]); setCurrentTripID(trip.id); }}
         />
 
-        <TripSidebar trips={trips} selectTrip={filterCurrentTrip}></TripSidebar>
+        <TripSidebar trips={trips} selectTrip={filterCurrentTrip} onDelete={setTripToDelete}></TripSidebar>
+        <ConfirmPopup
+          isOpen={tripToDelete !== null}
+          onClose={() => setTripToDelete(null)}
+          onConfirm={() => deleteTrip(tripToDelete)}
+          title="Delete Trip?"
+          message={`"${tripToDelete?.name}" and all of its transportation, accommodations, and activities will be permanently deleted.`}
+        />
         <button className = "logout-button" onClick={() => navigatePage("login")}>log out</button>
       </div>
 
