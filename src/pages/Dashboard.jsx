@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
 import ManualEntryPopup from '../components/ManualEntryPopup';
+import AIPopup from '../components/AIPopup';
 import TripSidebar from '../components/TripSidebar';  
-import {ActivityInfoDisplayCard, AccomodationInfoDisplayCard, TransportInfoDisplayCard} from '../components/InfoDisplayCard'
+import SortItinerary from '../components/SortItinerary';
+
+import {ActivityInfoDisplayCard, AccomodationInfoDisplayCard1, AccomodationInfoDisplayCard2, TransportInfoDisplayCard} from '../components/InfoDisplayCard'
 
 import './Dashboard.css';
+import '../components/TripSidebar.css'
 
 export default function Dashboard({navigatePage, userId}) {
 
@@ -47,6 +51,8 @@ export default function Dashboard({navigatePage, userId}) {
     { name: "cost", label: "Cost" },
   ];
 
+  const [AIPopupOpen, setAIPopupOpen] = useState(false);
+
   const [newTripPopupOpen, setNewTripPopupOpen] = useState(false);
   const tripInputs = [
     { name: "name", label: "Trip Name" },
@@ -59,7 +65,7 @@ export default function Dashboard({navigatePage, userId}) {
 
   /* TRIP FILTER FUNCTIONALITY*/
 
-  //placeholder
+  //shows which trip user has selected
   const [trips, setTrips] = useState([]);
   const [currentTripID, setCurrentTripID] = useState(null);
 
@@ -78,13 +84,11 @@ export default function Dashboard({navigatePage, userId}) {
       .catch((err) => console.error(err));
   }, [userId]);
 
-  // todo: do we still need this?
   const displayTrip = trips.find(t => t.id === currentTripID);
 
   function filterCurrentTrip(id){
     setCurrentTripID(id);
   }
-
 
 
   /* DISPLAY ENTRIES FUNCTIONALITY*/
@@ -112,7 +116,7 @@ export default function Dashboard({navigatePage, userId}) {
       .catch((err) => console.error(err));
   }, [currentTripID]);
 
-
+  
 
   /* EDIT ENTRIES FUNCTIONALITY*/
   const [editing, setEditing] = useState(null); // which entry is being edited, e.g. { table: "activities", entry: {...} }
@@ -132,10 +136,16 @@ export default function Dashboard({navigatePage, userId}) {
 
 
   return (
-    <div class="dashboard">
+    <div className="dashboard">
 
-      <div class="sidebar">
-        <button name="new trip" onClick={() => setNewTripPopupOpen(true)}>+ New Trip </button>
+      <div className="sidebar">
+        <button 
+        name="new trip" 
+        onClick={() => setNewTripPopupOpen(true)}
+        className = "sidebar-new-trip"
+        >
+          + New Trip
+        </button>
         <ManualEntryPopup
           isOpen={newTripPopupOpen}
           onClose={() => setNewTripPopupOpen(false)}
@@ -147,19 +157,18 @@ export default function Dashboard({navigatePage, userId}) {
         />
 
         <TripSidebar trips={trips} selectTrip={filterCurrentTrip}></TripSidebar>
+        <button className = "logout-button" onClick={() => navigatePage("login")}>log out</button>
       </div>
-
-
 
       <div style={{height:"3rem"}}></div>
 
-
-
       <div class="main-content">
-        <h1>DASHBOARD PAGE</h1>
-        <h2>Add Your Plans!</h2>
+        <h1 className = "title">Dashboard Page</h1>
+        <h2 className = "subheader">Add Your Plans!</h2>
 
-        <button name="transportation" disabled={!currentTripID} onClick={() => setTransportationPopupOpen(true)}>transportation </button>
+        {/* ADDING TRIP INFO ACTIVATION BAR */}
+        <div className = "action-bar">
+        <button name="transportation" className = "action-button" disabled={!currentTripID} onClick={() => setTransportationPopupOpen(true)}>transportation </button>
         <ManualEntryPopup
           isOpen={transportationPopupOpen}
           onClose={() => setTransportationPopupOpen(false)}
@@ -169,9 +178,8 @@ export default function Dashboard({navigatePage, userId}) {
           onSaved={(entry) => setTransportation(t => [...t, entry])}
         />
 
-        <div style={{height:"rem"}}></div>
 
-        <button name="accommodations" disabled={!currentTripID} onClick={() => setAccommodationsPopupOpen(true)}>accommodations</button>
+        <button name="accommodations" className = "action-button" disabled={!currentTripID} onClick={() => setAccommodationsPopupOpen(true)}>accommodations</button>
         <ManualEntryPopup
           isOpen={accommodationsPopupOpen}
           onClose={() => setAccommodationsPopupOpen(false)}
@@ -181,9 +189,7 @@ export default function Dashboard({navigatePage, userId}) {
           onSaved={(entry) => setAccommodations(a => [...a, entry])}
         />
 
-        <div style={{height:"rem"}}></div>
-
-        <button name="activity" disabled={!currentTripID} onClick={() => setActivityPopupOpen(true)}>activity</button>
+        <button name="activity" className = "action-button" disabled={!currentTripID} onClick={() => setActivityPopupOpen(true)}>activity</button>
         <ManualEntryPopup
           isOpen={activityPopupOpen}
           onClose={() => setActivityPopupOpen(false)}
@@ -193,52 +199,29 @@ export default function Dashboard({navigatePage, userId}) {
           onSaved={(entry) => setActivities(a => [...a, entry])}
         />
 
+
+        <button name="AI Suggestions" className = "action-button" disabled={!currentTripID} onClick={() => setAIPopupOpen(true)}>AI Suggestions</button>
+        <AIPopup
+          isOpen={AIPopupOpen}
+          onClose={() => setAIPopupOpen(false)}
+        />
+        
+        </div>
+
         <div style={{height:"2rem"}}></div>
 
-        <h2>Current Trip: {displayTrip?.name ?? "none selected"}</h2>
+        <h2 className='subheader'>{displayTrip?.name ?? "none selected"}</h2>
+        <div style={{height:"2rem"}}></div>
 
-        {transportation.map((t) => (
-          <TransportInfoDisplayCard
-            key = {t.id}
-            date = {t.depart_date?.slice(0, 10)}
-            time = {t.depart_time}
-            departure = {t.depart_location}
-            destination = {t.arrive_location}
-            mode = {t.type}
-            id = {t.confirmation}
-            onEdit = {() => setEditing({ table: "transportation", entry: t })}
-          />
-        ))}
-
-        {accommodations.map((a) => (
-          <div key = {a.id}>
-            <AccomodationInfoDisplayCard
-              name = {a.name}
-              location = {a.city}
-              date = {a.check_in?.slice(0, 10)}
-              isCheckIn = {true}
-              onEdit = {() => setEditing({ table: "accommodations", entry: a })}
-            />
-            <AccomodationInfoDisplayCard
-              name = {a.name}
-              location = {a.city}
-              date = {a.check_out?.slice(0, 10)}
-              isCheckIn = {false}
-              onEdit = {() => setEditing({ table: "accommodations", entry: a })}
-            />
-          </div>
-        ))}
-
-        {activities.map((a) => (
-          <ActivityInfoDisplayCard
-            key = {a.id}
-            name = {a.name}
-            location = {a.location}
-            date = {a.date?.slice(0, 10)}
-            startTime = {a.start_time}
-            onEdit = {() => setEditing({ table: "activities", entry: a })}
-          />
-        ))}
+      {/* DISPLAY TRIPS IN CHRONOLOGICAL ORDER */}
+      <div className = "trip-list">
+        <SortItinerary
+          transportation={transportation}
+          accommodations={accommodations}
+          activities={activities}
+          setEditing={setEditing}
+        />
+      </div>
 
         {editing && (
           <ManualEntryPopup
@@ -253,9 +236,7 @@ export default function Dashboard({navigatePage, userId}) {
           />
         )}
 
-        <div style={{height:"2rem"}}></div>
-        <h2>Log Out:</h2>
-        <button onClick={() => navigatePage("login")}>log out</button>
+        
       </div>
 
     </div>

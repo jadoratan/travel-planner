@@ -15,8 +15,10 @@ export default function TextField({fieldName, variable, handleEvent, type}){
           className='text-fields'
         />
 
-        {/*for testing purposes*/}
+        {/*
+        for testing purposes
         <p><strong>Current {fieldName}:</strong> {variable}</p>
+        */}
       </>
     );
   }

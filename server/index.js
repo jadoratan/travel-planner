@@ -53,8 +53,23 @@ app.post('/login', async function(req, res) {
     }
 });
 
+// set GEMINI_STUB=true in server/.env to return a fake reply without calling Gemini (no API key needed)
+const USE_GEMINI_STUB = process.env.GEMINI_STUB === 'true';
+
 app.post('/chat', async (req, res) => {
   const { message, trip } = req.body;
+
+  if (USE_GEMINI_STUB) {
+    // test hook: a message of "fail" returns an error so the popup's error display can be checked
+    if (message === 'fail') {
+      return res.status(500).json({ error: 'Chat failed (stub)' });
+    }
+    await new Promise(resolve => setTimeout(resolve, 500)); // short delay so "thinking..." is visible
+    return res.json({
+      reply: `[stub] Ideas for ${trip || 'your trip'} based on "${message}": visit a local market, take a walking tour, try a regional dish.`,
+    });
+  }
+
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-3.8-flash',

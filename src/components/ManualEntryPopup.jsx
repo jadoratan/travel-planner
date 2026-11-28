@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import './ManualEntryPopup.css';
 
 export default function ManualEntryPopup({
     isOpen,
@@ -60,11 +61,16 @@ export default function ManualEntryPopup({
     <dialog
       ref={popupRef}
       onClose={onClose}
+      className = "popup"
     >
-      <h2>{title}</h2>
-      <form onSubmit={handleSubmit}>
+      <h2 id = "popup-title" className = "popup-title">{title}</h2>
+      <form 
+      onSubmit={handleSubmit}
+      className = "popup-form"
+      >
         {inputs.map((input) => (
           <div key={input.name}>
+            <label className = "popup-label">{input.name}: </label>
             {input.options ? (
               <select name={input.name} defaultValue={initialValues[input.name] ?? ""} required>
                 <option value="" disabled>{input.label}</option>
@@ -83,10 +89,10 @@ export default function ManualEntryPopup({
             )}
           </div>
         ))}
-        <button type="submit">Done!</button>
-        {error && <p role="alert">{error}</p>}
+        <button type="submit" className="popup-button">Done!</button>
+        {error && <p className="popup-error" role="alert">{error}</p>}
         <div></div>
-        <button type="button" onClick={onClose}>Close</button>
+        <button type="button" onClick={onClose} className="popup-button popup-button--secondary">Close</button>
       </form>
     </dialog>
   );

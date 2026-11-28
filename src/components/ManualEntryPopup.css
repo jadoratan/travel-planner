@@ -1,0 +1,246 @@
+/*
+[GENAI USE]
+
+[prompt]: this is the react jsx for a popup form. can you create css for it
+
+rounded corners for the popup and same style as before
+
+```javascriptreact
+ <h2>{title}</h2>
+      <form onSubmit={handleSubmit}>
+        {inputs.map((input) => (
+          <div key={input.name}>
+            <p>{input.name}</p>
+            {input.options ? (
+              <select name={input.name} defaultValue={initialValues[input.name] ?? ""} required>
+                <option value="" disabled>{input.label}</option>
+                {input.options.map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+               ))}
+              </select>
+            ) : (
+              <input
+                name={input.name}
+                type={input.type ?? "text"}
+                placeholder={input.label}
+                aria-label={input.label}
+                defaultValue={initialValues[input.name] ?? ""}
+              />
+            )}
+          </div>
+        ))}
+        <button type="submit">Done!</button>
+        {error && <p role="alert">{error}</p>}
+        <div></div>
+        <button type="button" onClick={onClose}>Close</button>
+      </form>
+```
+[response]: I wrote the styles in Popup.css and an updated ManualEntryPopup-snippet.jsx with class names added. I haven't run either, so check the popup in your app.
+
+Look
+
+The popup is a blush card with 24px rounded corners and a soft shadow, centered over a dimmed plum overlay.
+The heading uses Fraunces, the same as login and sign up.
+Inputs and dropdowns are white pills with the sea-blue border. They turn teal with a sage glow on focus, as on the login page.
+The dropdown has a custom teal arrow, since the browser default doesn't match the pill style.
+"Close" is the outlined button and "Done!" is the filled teal one, side by side. On phones they stack.
+Errors show in red above the buttons, and a disabled primary button gets the muted sage look from before.
+
+JSX changes
+
+Wrapper: your snippet only had the contents, so I added an overlay and a card around it. Keep your existing "if not open, return nothing" check above it.
+Clicking outside: clicking the dimmed background calls onClose, and clicks inside the card don't. Delete the onClick on popup-overlay if you don't want that.
+Labels: each <p>{input.name}</p> is now a <label> tied to its input by htmlFor, so clicking the label focuses the field.
+Button order: the two buttons now sit together at the bottom, so I removed the empty <div></div> between them.
+
+Label text: the labels print input.name as-is. CSS can capitalize the first letter, but a camelCase name like startDate will show as "StartDate". If you want nicer text, show input.label instead, or add a title field to your input config.
+
+If another stylesheet has global button, input, or h2 rules, I prefixed my selectors with .popup so mine should win. If something still looks off, inspect the element and tell me what it shows.
+
+
+[reflection]: surprisingly, it only took this one prompt to get the CSS I wanted (and that
+was without giving Claude a picture of the mockup too). I think the context that it had from
+creating the layout for the login and signup pages as well as the trip sidebar component
+was helpful in informing the layout for the manual entry popup form.
+
+*/
+
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700&display=swap');
+
+
+:root {
+  --wf-blush: #ffede5;
+  --wf-sun: #ffd0b8;
+  --wf-sage: #9fc0b8;
+  --wf-sea: #6d9db0;
+  --wf-teal: #2f5552;
+  --wf-teal-hover: #254441;
+  --wf-plum: #3a1f4a;
+  --wf-ink: #3f6b73;
+  --wf-error: #a3341f;
+}
+
+
+/* ---------- Overlay + card ---------- */
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(58, 31, 74, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.popup {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 32px;
+  font-family: 'Nunito', system-ui, sans-serif;
+  color: var(--wf-ink);
+  background: var(--wf-blush);
+  border-radius: 24px;
+  box-shadow: 0 24px 60px rgba(47, 85, 82, 0.35);
+}
+
+.popup * {
+  box-sizing: border-box;
+}
+
+.popup .popup-title {
+  margin: 0 0 24px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.75rem;
+  line-height: 1.15;
+  text-align: left;
+  color: var(--wf-plum);
+}
+
+/* ---------- Form ---------- */
+
+.popup .popup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 0;
+}
+
+.popup .popup-label {
+  display: block;
+  margin: 0 0 6px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-align: left;
+  text-transform: capitalize;
+  color: var(--wf-plum);
+}
+
+.popup .popup-form input,
+.popup .popup-form select {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  font: inherit;
+  color: var(--wf-plum);
+  background: #fff;
+  border: 2px solid var(--wf-sea);
+  border-radius: 999px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.popup .popup-form input::placeholder {
+  color: rgba(63, 107, 116, 0.6);
+}
+
+.popup .popup-form input:focus,
+.popup .popup-form select:focus {
+  outline: none;
+  border-color: var(--wf-teal);
+  box-shadow: 0 0 0 4px rgba(159, 192, 184, 0.55);
+}
+
+/* Custom dropdown arrow */
+.popup .popup-form select {
+  appearance: none;
+  padding-right: 44px;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1.5l6 6 6-6' fill='none' stroke='%232f5552' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
+}
+
+/* ---------- Buttons ---------- */
+
+.popup .popup-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.popup .popup-button {
+  flex: 1;
+  padding: 12px 24px;
+  font: inherit;
+  font-weight: 700;
+  color: var(--wf-blush);
+  background: var(--wf-teal);
+  border: 2px solid var(--wf-teal);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.popup .popup-button:hover {
+  background: var(--wf-teal-hover);
+  border-color: var(--wf-teal-hover);
+}
+
+.popup .popup-button--secondary {
+  color: var(--wf-teal);
+  background: transparent;
+}
+
+.popup .popup-button--secondary:hover {
+  color: var(--wf-blush);
+  background: var(--wf-teal);
+  border-color: var(--wf-teal);
+}
+
+.popup .popup-button:focus-visible {
+  outline: 3px solid var(--wf-sea);
+  outline-offset: 3px;
+}
+
+.popup .popup-button:disabled {
+  color: rgba(255, 237, 229, 0.85);
+  background: var(--wf-sage);
+  border-color: var(--wf-sage);
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.popup .popup-error {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: left;
+  color: var(--wf-error);
+}
+
+@media (max-width: 480px) {
+  .popup {
+    padding: 24px 20px;
+    border-radius: 20px;
+  }
+
+  .popup .popup-actions {
+    flex-direction: column-reverse;
+  }
+}
